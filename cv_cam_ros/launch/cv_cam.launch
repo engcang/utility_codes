@@ -1,0 +1,11 @@
+<launch>
+<node name="cv_cam_node" pkg="cv_cam" type="cv_cam_node" output="screen">
+    <!-- Image characteristics -->
+	<param name="width" value="1920" /> 
+    <param name="height" value="1080" />
+    <param name="fps" value="30" />
+
+    <!-- Image quality options -->
+    <param name="options" value="exposuretimerange=low exposurecompensation=2 tnr-mode=1 wbmode=0 ee-mode=2" />
+</node>
+</launch>
