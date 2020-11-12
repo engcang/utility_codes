@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import PoseStamped
 from tf2_msgs.msg import TFMessage
@@ -15,6 +16,7 @@ signal.signal(signal.SIGINT, signal_handler)
 class caster():
     def __init__(self):
         rospy.init_node('tf_broadcaster', anonymous=True)
+        self.camera_link_name = rospy.get_param("/camera_link_name", 'camera_link')
         self.pose_sub = rospy.Subscriber('/mavros/local_position/pose', PoseStamped, self.base_cb)
         self.rate = rospy.Rate(30)
 
@@ -27,7 +29,8 @@ class caster():
         self.br.sendTransform((msg.pose.position.x, msg.pose.position.y, msg.pose.position.z),\
 (msg.pose.orientation.x,msg.pose.orientation.y,msg.pose.orientation.z,msg.pose.orientation.w),\
 self.header,"base_link","map")
-        self.br.sendTransform((0.05, 0, 0), (0.5,-0.5,0.5,-0.5), self.header,"camera_link","base_link")
+#        self.br.sendTransform((0.092, 0, -0.066), (-0.5609855, 0.5609855, -0.4304593, 0.4304593), self.header,"camera_link","base_link")
+        self.br.sendTransform((0.092, 0, -0.066), (0.5,-0.5,0.5,-0.5), self.header, self.camera_link_name,"base_link")
         return
 
 if __name__ == '__main__':
