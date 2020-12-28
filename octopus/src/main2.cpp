@@ -46,7 +46,7 @@ using namespace std::chrono;
 using namespace Eigen;
 
 octomap::OcTree *m_octree;
-double octomap_resolution, octomap_hit, octomap_miss, map_min_z, map_max_z;
+double octomap_resolution, octomap_hit, octomap_miss;
 int free_oc=0, occ_oc=0;
 
 ros::Publisher pcl_pub, octo_pub;
@@ -55,6 +55,9 @@ Matrix4f map_t_cam = Matrix4f::Identity();
 Matrix4f map_t_body = Matrix4f::Identity();
 Matrix4f body_t_cam = Matrix4f::Identity();
 
+sensor_msgs::Image depth;
+cv_bridge::CvImagePtr depth_ptr;
+pcl::PointXYZ p3d, p3d_empty;
 pcl::PointCloud<pcl::PointXYZ> depth_cvt_pcl, depth_cvt_pcl_map;
 high_resolution_clock::time_point oc_start_t;
 
@@ -126,9 +129,26 @@ void tf_callback(const tf2_msgs::TFMessage::ConstPtr& msg){
   tf_check=true;
 }
 
-void depth_callback(const sensor_msgs::PointCloud2::ConstPtr& msg){
+void depth_callback(const sensor_msgs::Image::ConstPtr& msg){
     if (tf_check){
-        depth_cvt_pcl = cloudmsg2cloud(*msg);
+        depth=*msg;
+        depth_cvt_pcl.clear();
+        if (depth.encoding=="32FC1"){
+          depth_ptr = cv_bridge::toCvCopy(depth, "32FC1"); // == sensor_msgs::image_encodings::TYPE_32FC1
+          for (int i=0; i<depth_ptr->image.rows; i++)
+          {
+            for (int j=0; j<depth_ptr->image.cols; j++)
+            {
+              float temp_depth = depth_ptr->image.at<float>(i,j);
+              if (temp_depth >= 0.2 and temp_depth <=8.0){
+                p3d.z = temp_depth; //float!!! double makes error here!!! because encoding is "32FC", float
+                p3d.x = ( j - 320.5 ) * p3d.z / 319.9988245765257;
+                p3d.y = ( i - 240.5 ) * p3d.z / 319.9988245765257;
+                depth_cvt_pcl.push_back(p3d);
+              }
+            }
+          }
+        }
         pcl::transformPointCloud(depth_cvt_pcl, depth_cvt_pcl_map, map_t_cam);
         std::vector<int> indexx;
         pcl::removeNaNFromPointCloud(depth_cvt_pcl_map, depth_cvt_pcl_map, indexx);
@@ -181,15 +201,13 @@ int main(int argc, char **argv)
     nh.param("/octomap_resolution", octomap_resolution, 0.3);
     nh.param("/octomap_hit", octomap_hit, 0.8);
     nh.param("/octomap_miss", octomap_miss, 0.45);
-    nh.param("/map_min_z", map_min_z, 0.0);
-    nh.param("/map_max_z", map_max_z, 2.3);
 
     m_octree = new octomap::OcTree(octomap_resolution);
     m_octree->setProbHit(octomap_hit);
     m_octree->setProbMiss(octomap_miss);
     oc_start_t = high_resolution_clock::now();
 
-    ros::Subscriber depth_sub = nh.subscribe<sensor_msgs::PointCloud2>("/d455/depth/pointcloud", 10, depth_callback);
+    ros::Subscriber depth_sub = nh.subscribe<sensor_msgs::Image>("/d455/depth/image_raw", 10, depth_callback);
     ros::Subscriber tf_sub = nh.subscribe<tf2_msgs::TFMessage>("/tf", 10, tf_callback);
     pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("/octopus", 10);
     octo_pub = nh.advertise<octomap_msgs::Octomap>("/aeplanner/octomap_full", 10);

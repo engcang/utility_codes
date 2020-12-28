@@ -28,3 +28,6 @@ catkin_package()
 
 add_executable(octopus_node src/main.cpp)
 target_link_libraries(octopus_node ${catkin_LIBRARIES} ${EIGEN3_LIBS} ${OpenCV_LIBS} ${OCTOMAP_LIBRARIES})
+
+add_executable(octopus_new_node src/main2.cpp)
+target_link_libraries(octopus_new_node ${catkin_LIBRARIES} ${EIGEN3_LIBS} ${OpenCV_LIBS} ${OCTOMAP_LIBRARIES})
