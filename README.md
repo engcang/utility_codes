@@ -8,6 +8,7 @@ A collection of various utility codes coded myself(most) and collected by Googli
 + ros_picam.py: OpenCV camera code Python for ROS publish
 + cv_cam_16bit.py: OpenCV camera code Python for 16bit(14bit) images e.g., thermal cameras
 + cv_cam_ros: OpenCV camera code for ROS C++
++ ros_img_callback_save.py: callback ROS image and save as .jpg
 
 ---
 
