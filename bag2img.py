@@ -22,7 +22,7 @@ def Bagtoimage(bagname, folder='./'):
             topics.append(topic)
 
     for topi in topics:
-        img_name_prefix="_".join(topic.split('/'))
+        img_name_prefix="_".join(topi.split('/'))
         for topic, msg, t in rosbag.Bag(bagname):
             if topic == topi:
                 img=bridge.imgmsg_to_cv2(msg, "bgr8")
