@@ -23,13 +23,16 @@ def Bagtoimage(bagname, folder='./'):
 
     for topi in topics:
         img_name_prefix="_".join(topi.split('/'))
+        count=0
         for topic, msg, t in rosbag.Bag(bagname):
             if topic == topi:
-                img=bridge.imgmsg_to_cv2(msg, "bgr8")
-                cv2.imshow('test', img)
-                cv2.waitKey(1)
-                print(folder+'/'+img_name_prefix+'_%06d.png'%(msg.header.seq))
-                cv2.imwrite(folder+'/'+img_name_prefix+'_%06d.png'%(msg.header.seq), img)
+#                img=bridge.imgmsg_to_cv2(msg, "bgr8")
+                img=bridge.imgmsg_to_cv2(msg)
+#                cv2.imshow('test', img)
+#                cv2.waitKey(1)
+                print(folder+'/'+img_name_prefix+'_%06d.png'%count)
+                cv2.imwrite(folder+'/'+img_name_prefix+'_%06d.png'%count, img)
+                count=count+1
 
 if __name__ == "__main__":
     if len( sys.argv ) == 3:
