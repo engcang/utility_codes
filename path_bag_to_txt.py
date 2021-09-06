@@ -15,7 +15,12 @@ else:
     sys.exit(1)
 
 
-os.makedirs("csv_files")
+if not os.path.exists("csv_files"):
+    os.makedirs("csv_files")
+    print("csv_files folder generated...")
+else:
+    print("csv_files folder already exists, using that folder...")
+    
 count = 0
 for bagFile in listOfBagFiles:
     count += 1
