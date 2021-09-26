@@ -21,6 +21,7 @@ A collection of various utility codes coded myself(most) and collected by Googli
 + mp4tobag.py: read mp4 using OpenCV and save as ROS bag file
 + bag2img.py: read rosbag and save image files
 + compressed_to_raw.py: compressed image to raw image ROS(ROS basic package already exists but...)
++ raw_to_compressed.py: raw image to compressed image ROS(ROS basic package already exists but...)
 + rgb2gray.py: rgb to gray image OpenCV and ROS publish
 + rosbag_topic_name_changer.py: renaming code for topic in ROSbag file
 

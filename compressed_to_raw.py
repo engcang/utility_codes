@@ -57,7 +57,7 @@ class converter():
 
 #    def callback(self,data):
 #        try :
-##		self.time = time.time()
+##      self.time = time.time()
 #        cvimage=self.bridge.imgmsg_to_cv2(data,"bgr8")
 
 #        cv_image=cv2.cvtColor(cvimage,cv2.COLOR_BGR2GRAY)
