@@ -50,7 +50,8 @@ A collection of various utility codes coded myself(most) and collected by Googli
 
 + marker_path_length.py: length of marker in ROS
 + nav_path_length.py: length of nav_msgs/Path in ROS
-+ path_bag_to_txt.py: read ROS bag file with nav_msgs/Path and write .csv file for pose estimation performance comparison in EVO or rpg-evaluation
++ path_bag_to_txt.py: read ROS bag files with nav_msgs/Path and write .csv file for pose estimation performance comparison in EVO or rpg-evaluation
++ nav_odometry_bag_to_txt.py: read ROS bag files with nav_msgs/Odometry and write .csv file for pose estimation performance comparison in EVO or rpg-evaluation
 
 ---
 
