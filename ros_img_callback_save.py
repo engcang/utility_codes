@@ -18,11 +18,11 @@ signal.signal(signal.SIGINT, signal_handler)
 class cam():
     def __init__(self):
         rospy.init_node('img_saver', anonymous=True)
-        self.img_subscriber = rospy.Subscriber('/d435i/stereo_ir/left/image_raw', Image, self.callback_saver)
+        self.img_count = rospy.get_param("/count", 0)
+        self.img_subscriber = rospy.Subscriber('/d435i/depth/rgb_image_raw', Image, self.callback_saver)
         self.image_path = '/home/mason/images/'
-        self.img_count = 0
         self.bridge = CvBridge()
-        self.rate = rospy.Rate(2)
+        self.rate = rospy.Rate(3)
         self.flag = False
 
     def callback_saver(self, msg):
@@ -36,8 +36,9 @@ if __name__=='__main__':
     while True:
         try:
             if (camera.flag):
-                cv2.imwrite(camera.image_path+'%d.jpg'%camera.img_count, camera.img)
+                cv2.imwrite(camera.image_path+'%04d.jpg'%camera.img_count, camera.img)
                 camera.img_count = camera.img_count+1
+                print(camera.img_count)
             camera.rate.sleep()	    
         except (rospy.ROSInterruptException, SystemExit, KeyboardInterrupt) :
             sys.exit(0)
