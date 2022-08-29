@@ -25,7 +25,7 @@ class converter():
         rospy.init_node('compressed_to_raw', anonymous=True)
         self.comp_sub1 = rospy.Subscriber('/camera/infra1/image_rect_raw/compressed',CompressedImage,self.callback1)
         self.comp_sub2 = rospy.Subscriber('/camera/infra2/image_rect_raw/compressed',CompressedImage,self.callback2)
-        self.imu_subscriber = rospy.Subscriber('/mavros/imu/data_raw', Imu, self.imu_callback)
+        self.imu_subscriber = rospy.Subscriber('/mavros/imu/data', Imu, self.imu_callback)
         self.img_pub1 = rospy.Publisher('/camera/infra1/img',Image,queue_size=100)
         self.img_pub2 = rospy.Publisher('/camera/infra2/img',Image,queue_size=100)
         self.imu_publisher = rospy.Publisher('/imu_data', Imu, queue_size=100)

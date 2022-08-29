@@ -28,6 +28,7 @@ def Bagtoimage(bagname, folder='./'):
             if topic == topi:
 #                img=bridge.imgmsg_to_cv2(msg, "bgr8")
                 img=bridge.imgmsg_to_cv2(msg)
+                #img=bridge.compressed_imgmsg_to_cv2(msg)
 #                cv2.imshow('test', img)
 #                cv2.waitKey(1)
                 print(folder+'/'+img_name_prefix+'_%06d.png'%count)
