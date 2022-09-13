@@ -78,6 +78,8 @@ A collection of various utility codes coded myself(most) and collected by Googli
 
 + filename_conver.py: file renaming code
 + image_name_converting.py: image name converting
++ image_name_converting_and_resizing.py: image name converting and resizing
++ labeling_edit.py: label edit for training
 + control_jetbot_imu.py: jetbot control code using only IMU since it does not have encoders
 + Runge_Kutta.m: runge-kutta method code for MATLAB
 
