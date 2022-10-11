@@ -80,6 +80,7 @@ A collection of various utility codes coded myself(most) and collected by Googli
 + image_name_converting.py: image name converting
 + control_jetbot_imu.py: jetbot control code using only IMU since it does not have encoders
 + Runge_Kutta.m: runge-kutta method code for MATLAB
++ python_terminal.py: process open and kill with Python
 
 ---
 
