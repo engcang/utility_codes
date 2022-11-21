@@ -11,6 +11,7 @@ A collection of various utility codes coded myself(most) and collected by Googli
 + cam_16bit_ros.py: OpenCV camera code ROS Python for 16bit(14bit) images e.g., thermal cameras
 + cv_cam_ros: OpenCV camera code for ROS C++
 + ros_img_callback_save.py: callback ROS image and save as .jpg
++ image_GPS_log.py: Write GPS data to image with EXIF library
 
 ---
 
