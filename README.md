@@ -38,6 +38,7 @@ A collection of various utility codes coded myself(most) and collected by Googli
 
 <br>
 
++ gazebo_gt_pub.py: subscribe gazebo/model_states (GT) and publish every GT as PoseStamped topic
 + gazebo_to_path_and_path_frame.py: gazebo/model_states ground truth position to nav_msgs/path topic for visualizing and pose estimation performance
 + rviz_path.py: subscribe gazebo/model_states ground truth position to publish it as nav_msgs/Path topic and also publising PX4-SITL drone pose, and Marker
 + gt_vision_pose.py: gazebo/model_states ground truth to mavros/vision_pose/pose for PX4-SITL, instead of GPS
