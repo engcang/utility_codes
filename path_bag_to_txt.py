@@ -54,7 +54,7 @@ for bagFile in listOfBagFiles:
                     if i==0:
                         offset=msg.poses[i].header.stamp
                     tmp_time = float((msg.poses[i].header.stamp-offset).secs) + float((msg.poses[i].header.stamp-offset).nsecs)/1000000000.0
-                    f.write("%.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f\n"%(tmp_time , msg.poses[i].pose.position.x, msg.poses[i].pose.position.y, msg.poses[i].pose.position.z, msg.poses[i].pose.orientation.x, msg.poses[i].pose.orientation.z, msg.poses[i].pose.orientation.y, msg.poses[i].pose.orientation.w))
+                    f.write("%.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f\n"%(tmp_time , msg.poses[i].pose.position.x, msg.poses[i].pose.position.y, msg.poses[i].pose.position.z, msg.poses[i].pose.orientation.x, msg.poses[i].pose.orientation.y, msg.poses[i].pose.orientation.z, msg.poses[i].pose.orientation.w))
             msg_counter += 1
         f.close()
     bag.close()
