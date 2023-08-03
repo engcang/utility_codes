@@ -6,6 +6,8 @@ import rospy
 from sensor_msgs.msg import Imu
 import pandas as pd
 
+sequence = 0
+
 def CreateImuBag(csvname, outname):
   dt = pd.read_csv(csvname)
   print(dt)
@@ -15,6 +17,7 @@ def CreateImuBag(csvname, outname):
     timestamp = rospy.Time.from_sec(dt['time'][row])
     imu_msg = Imu()
     imu_msg.header.stamp = timestamp
+    imu_msg.header.seq = sequence
     imu_msg.angular_velocity.x = dt['gx'][row]
     imu_msg.angular_velocity.y = dt['gy'][row]
     imu_msg.angular_velocity.z = dt['gz'][row]
@@ -26,6 +29,7 @@ def CreateImuBag(csvname, outname):
     imu_msg.orientation.y = dt['qy'][row]
     imu_msg.orientation.z = dt['qz'][row]
     bag.write("/imu", imu_msg, timestamp)
+    sequence = sequence + 1
 
   bag.close()
   return
