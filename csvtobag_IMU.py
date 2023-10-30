@@ -6,15 +6,13 @@ import rospy
 from sensor_msgs.msg import Imu
 import pandas as pd
 
-sequence = 0
-
 def CreateImuBag(csvname, outname):
   dt = pd.read_csv(csvname)
   print(dt)
   bag = rosbag.Bag(outname, 'w')
-
+  sequence = 0
   for row in range(dt.shape[0]):
-    timestamp = rospy.Time.from_sec(dt['time'][row])
+    timestamp = rospy.Time.from_sec(dt['time'][row]+32400)
     imu_msg = Imu()
     imu_msg.header.stamp = timestamp
     imu_msg.header.seq = sequence
