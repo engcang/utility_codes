@@ -8,7 +8,7 @@ Created on Tue Feb 26 02:02:03 2019
 ''' import libraries '''
 import time
 import rospy
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point, PoseStamped
 from visualization_msgs.msg import Marker
 
 import sys
@@ -32,17 +32,19 @@ def pt_to_geo(x, y, z):
 class robot():
     def __init__(self):
         rospy.init_node('robot_controller', anonymous=True)
-        self.position_pub = rospy.Publisher('/exploration/bound', Marker, queue_size=10)
+        self.global_marker_pub = rospy.Publisher('/exploration/bound', Marker, queue_size=10)
+        self.local_marker_pub = rospy.Publisher('/local/bound', Marker, queue_size=10)
+        self.pos_sub = rospy.Subscriber('/mavros/local_position/pose', PoseStamped, self.pose_callback)
         self.rate = rospy.Rate(1)
-        self.marker = Marker()
-        self.marker.header.frame_id = "map"
-        self.marker.type = 5;
-        self.marker.scale.x = 0.06
-        self.marker.color.r = 1
-        self.marker.color.b = 1
-        self.marker.color.a = 0.6
-        self.marker.pose.orientation.w = 1
-        
+        self.global_marker = Marker()
+        self.global_marker.header.frame_id = "map"
+        self.global_marker.type = 5;
+        self.global_marker.scale.x = 0.1
+        self.global_marker.color.r = 1
+        self.global_marker.color.b = 1
+        self.global_marker.color.a = 0.6
+        self.global_marker.pose.orientation.w = 1
+
         minx = -2
         miny = -2
         minz = -1
@@ -50,31 +52,77 @@ class robot():
         maxy = 28
         maxz = 4
         
-        self.marker.points.append(pt_to_geo(minx, miny, minz))
-        self.marker.points.append(pt_to_geo(minx, miny, maxz))
-        self.marker.points.append(pt_to_geo(minx, miny, minz))
-        self.marker.points.append(pt_to_geo(minx, maxy, minz))
-        self.marker.points.append(pt_to_geo(minx, miny, minz))
-        self.marker.points.append(pt_to_geo(maxx, miny, minz))
-        self.marker.points.append(pt_to_geo(maxx, miny, minz))
-        self.marker.points.append(pt_to_geo(maxx, maxy, minz))
-        self.marker.points.append(pt_to_geo(maxx, miny, minz))
-        self.marker.points.append(pt_to_geo(maxx, miny, maxz))
-        self.marker.points.append(pt_to_geo(minx, maxy, minz))
-        self.marker.points.append(pt_to_geo(minx, maxy, maxz))
-        self.marker.points.append(pt_to_geo(minx, maxy, minz))
-        self.marker.points.append(pt_to_geo(maxx, maxy, minz))
-        self.marker.points.append(pt_to_geo(maxx, maxy, minz))
-        self.marker.points.append(pt_to_geo(maxx, maxy, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, miny, minz))
+        self.global_marker.points.append(pt_to_geo(minx, miny, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, miny, minz))
+        self.global_marker.points.append(pt_to_geo(minx, maxy, minz))
+        self.global_marker.points.append(pt_to_geo(minx, miny, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, miny, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, miny, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, maxy, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, miny, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, miny, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, maxy, minz))
+        self.global_marker.points.append(pt_to_geo(minx, maxy, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, maxy, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, maxy, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, maxy, minz))
+        self.global_marker.points.append(pt_to_geo(maxx, maxy, maxz))
         
-        self.marker.points.append(pt_to_geo(minx, miny, maxz))
-        self.marker.points.append(pt_to_geo(minx, maxy, maxz))
-        self.marker.points.append(pt_to_geo(minx, miny, maxz))
-        self.marker.points.append(pt_to_geo(maxx, miny, maxz))
-        self.marker.points.append(pt_to_geo(maxx, miny, maxz))
-        self.marker.points.append(pt_to_geo(maxx, maxy, maxz))
-        self.marker.points.append(pt_to_geo(maxx, maxy, maxz))
-        self.marker.points.append(pt_to_geo(minx, maxy, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, miny, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, maxy, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, miny, maxz))
+        self.global_marker.points.append(pt_to_geo(maxx, miny, maxz))
+        self.global_marker.points.append(pt_to_geo(maxx, miny, maxz))
+        self.global_marker.points.append(pt_to_geo(maxx, maxy, maxz))
+        self.global_marker.points.append(pt_to_geo(maxx, maxy, maxz))
+        self.global_marker.points.append(pt_to_geo(minx, maxy, maxz))
+
+        self.local_marker = Marker()
+        self.local_marker.header.frame_id = "map"
+        self.local_marker.type = 5;
+        self.local_marker.scale.x = 0.06
+        self.local_marker.color.b = 1
+        self.local_marker.color.g = 1
+        self.local_marker.color.a = 0.7
+        self.local_marker.pose.orientation.w = 1
+
+        loc_minx = -4
+        loc_miny = -4
+        loc_minz = -1.5
+        loc_maxx = 4
+        loc_maxy = 4
+        loc_maxz = 1.5
+
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_miny, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_miny, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_miny, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_maxy, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_miny, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_miny, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_miny, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_maxy, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_miny, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_miny, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_maxy, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_maxy, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_maxy, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_maxy, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_maxy, loc_minz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_maxy, loc_maxz))
+        
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_miny, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_maxy, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_miny, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_miny, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_miny, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_maxy, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_maxx, loc_maxy, loc_maxz))
+        self.local_marker.points.append(pt_to_geo(loc_minx, loc_maxy, loc_maxz))
+
+    def pose_callback(self, msg):
+        self.local_marker.pose.position = msg.pose.position
+        self.local_marker_pub.publish(self.local_marker)
 
 ##############################################################################################
 
@@ -86,7 +134,7 @@ if __name__ == '__main__':
     print("STARTING VIS")
     while 1:
         try:
-            mav_ctr.position_pub.publish(mav_ctr.marker);
+            mav_ctr.global_marker_pub.publish(mav_ctr.global_marker);
             mav_ctr.rate.sleep()
         except (rospy.ROSInterruptException, SystemExit, KeyboardInterrupt) :
             sys.exit(0)

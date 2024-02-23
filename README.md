@@ -20,8 +20,6 @@ A collection of various utility codes coded myself(most) and collected by Googli
 
 + cv_images_to_mp4.py: read images in folder and save as mp4, OpenCV Python
 + mp4_to_ros.py: read mp4 using OpenCV and publish as ROS topic
-+ mp4tobag.py: read mp4 using OpenCV and save as ROS bag file
-+ bag2img.py: read rosbag and save image files
 + compressed_to_raw.py: compressed image to raw image ROS(ROS basic package already exists but...)
 + raw_to_compressed.py: raw image to compressed image ROS(ROS basic package already exists but...)
 + rgb2gray.py: rgb to gray image OpenCV and ROS publish
@@ -30,8 +28,13 @@ A collection of various utility codes coded myself(most) and collected by Googli
 
 <br>
 
++ mp4tobag.py: read mp4 using OpenCV and save as ROS bag file
++ bag2img.py: read rosbag and save image files
 + rosbag_topic_name_changer.py: renaming code for topic in ROSbag file
 + csvtobag_IMU.py: read csv file of IMU data and save as ROS bagfile
++ path_bag_to_txt.py: read ROS bag files with nav_msgs/Path and write .csv file for pose estimation performance comparison in EVO or rpg-evaluation
++ nav_odometry_bag_to_txt.py: read ROS bag files with nav_msgs/Odometry and write .csv file for pose estimation performance comparison in EVO or rpg-evaluation
++ merge_all_bagfiles.py: merge all bag files in the directory
 
 ---
 
@@ -57,8 +60,6 @@ A collection of various utility codes coded myself(most) and collected by Googli
 
 + marker_path_length.py: length of marker in ROS
 + nav_path_length.py: length of nav_msgs/Path in ROS
-+ path_bag_to_txt.py: read ROS bag files with nav_msgs/Path and write .csv file for pose estimation performance comparison in EVO or rpg-evaluation
-+ nav_odometry_bag_to_txt.py: read ROS bag files with nav_msgs/Odometry and write .csv file for pose estimation performance comparison in EVO or rpg-evaluation
 
 ---
 
