@@ -26,7 +26,7 @@ def CreateVideoBag(videopath, TOPIC='usb_cam/image_raw'):
     cb = CvBridge()
     prop_fps = cap.get(cv2.CAP_PROP_FPS)
     if prop_fps != prop_fps or prop_fps <= 1e-2:
-        print "Warning: can't get FPS. Assuming 30."
+        print("Warning: can't get FPS. Assuming 30.")
         prop_fps = 30
 
     rate = rospy.Rate(prop_fps)

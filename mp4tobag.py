@@ -23,7 +23,7 @@ def CreateVideoBag(videopath, bagname):
     cb = CvBridge()
     prop_fps = cap.get(cv2.CAP_PROP_FPS)
     if prop_fps != prop_fps or prop_fps <= 1e-2:
-        print "Warning: can't get FPS. Assuming 24."
+        print ("Warning: can't get FPS. Assuming 24.")
         prop_fps = 24
     ret = True
     frame_id = 0
