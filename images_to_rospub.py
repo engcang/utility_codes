@@ -21,8 +21,11 @@ def publish_images(folder_path, topic_name, fps):
     image_files = [f for f in os.listdir(folder_path) if f.endswith(('png', 'jpg', 'jpeg'))]
     image_files.sort()
 
+    count = 0
     while not rospy.is_shutdown():
         for image_file in image_files:
+            print (count, " / ", len(image_files))
+            count = count + 1
             image_path = os.path.join(folder_path, image_file)
             image = cv2.imread(image_path)
             image = cv2.resize(image, (640, 480))
@@ -39,6 +42,7 @@ def publish_images(folder_path, topic_name, fps):
                 break
             except Exception as e:
                 rospy.logerr("Error converting image: %s", e)
+        break
 
 
 if __name__ == '__main__':
