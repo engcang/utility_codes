@@ -21,6 +21,6 @@ def merge_bag_files(input_directory, output_bag_file):
     print(f"All bag files have been merged into {output_bag_file}")
 
 # Example usage
-input_directory = '/home/mason/Downloads/test2'
-output_bag_file = '/home/mason/Downloads/test2_merged.bag'
+input_directory = '/home/mason/bags/subt_mrs/sensor fusion challenges/SubT_MRS_Hawkins_Multi_Floor_LegRobot'
+output_bag_file = '/home/mason/bags/subt_mrs/sensor fusion challenges/SubT_MRS_Hawkins_Multi_Floor_LegRobot.bag'
 merge_bag_files(input_directory, output_bag_file)
