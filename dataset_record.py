@@ -33,7 +33,7 @@ processes = []
 
 def run_roslaunch():
     """roslaunch 명령어를 실행"""
-    roslaunch_cmd = ["vglrun", "roslaunch", "slict", "run_ntuviral.launch"]
+    roslaunch_cmd = ["vglrun", "roslaunch", "ma_lio", "ntu_viral.launch"]
     roslaunch_process = subprocess.Popen(roslaunch_cmd, preexec_fn=os.setsid)
     processes.append(roslaunch_process)
     return roslaunch_process
@@ -110,6 +110,7 @@ def main(root_directory, topic_name, target_node_name):
                 monitor_process.join()
 
                 # 7. roslaunch, rostopic echo 프로세스 종료
+                time.sleep(30)  # roslaunch가 완전히 실행될 시간을 줌
                 terminate_process_and_children(roslaunch_process)
                 terminate_process_and_children(predict_odom_process)
                 terminate_process_and_children(leica_pose_process)
@@ -124,7 +125,6 @@ def main(root_directory, topic_name, target_node_name):
 
 if __name__ == "__main__":
     root_directory = "/home/mason/bags/ntu_viral"  # 루트 디렉토리 경로를 지정
-    topic_name = "/opt_odom"  # topic 이름을 지정
-    target_node_name = "slict_estimator"  # 모니터링할 노드의 이름
+    topic_name = "/Odometry"  # topic 이름을 지정
+    target_node_name = "/laserMapping"  # 모니터링할 노드의 이름
     main(root_directory, topic_name, target_node_name)
-
