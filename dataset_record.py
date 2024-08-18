@@ -1,7 +1,6 @@
 import os
 import subprocess
 import time
-import psutil
 import sys
 import signal
 from multiprocessing import Process
@@ -53,18 +52,40 @@ def run_rostopic_echo(topic, output_file):
     processes.append(rostopic_process)
     return rostopic_process
 
-def monitor_cpu_usage(process_name, interval=1.0):
-    """특정 프로세스의 CPU 사용량을 모니터링하여 평균 계산"""
+def get_full_process_name_and_cpu_usage(process_name, interval=1.0):
+    """ps 명령어로 전체 프로세스 이름을 얻고 CPU 사용량을 top 명령어로 측정"""
     cpu_usages = []
     try:
-        for proc in psutil.process_iter(['pid', 'name']):
-            if process_name in proc.info['name']:  # 이름에 process_name이 포함되어 있는지 확인
-                target_proc = psutil.Process(proc.info['pid'])
-                while target_proc.is_running():
-                    cpu_usage = target_proc.cpu_percent(interval=interval)
-                    cpu_usages.append(cpu_usage)
-                    time.sleep(interval)
-    except psutil.NoSuchProcess:
+        while True:
+            # 전체 프로세스 이름과 PID를 얻기 위해 ps 명령어 실행
+            ps_command = subprocess.Popen(
+                ["ps", "-eo", "pid,comm"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            ps_output = ps_command.stdout.read().decode()
+            target_pid = None
+            for line in ps_output.splitlines():
+                if process_name in line:
+                    target_pid = int(line.split()[0])
+                    break
+
+            if target_pid:
+                # 해당 PID의 CPU 사용량을 top 명령어로 측정
+                top_command = subprocess.Popen(
+                    ["top", "-b", "-n", "1", "-p", str(target_pid)],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                top_output = top_command.stdout.read().decode()
+                for line in top_output.splitlines():
+                    if str(target_pid) in line:
+                        # CPU 사용량 추출
+                        cpu_usage = float(line.split()[8])
+                        cpu_usages.append(cpu_usage)
+                        break
+
+            time.sleep(interval)
+
+    except KeyboardInterrupt:
         pass
 
     if cpu_usages:
@@ -94,10 +115,10 @@ def main(root_directory, topic_name, target_node_name):
                 leica_pose_process = run_rostopic_echo("/leica/pose/relative", leica_pose_file)
 
                 # 2. CPU 모니터링 시작 (별도의 프로세스로)
-                monitor_process = Process(target=monitor_cpu_usage, args=(target_node_name,))
+                monitor_process = Process(target=get_full_process_name_and_cpu_usage, args=(target_node_name,))
                 monitor_process.start()
                 processes.append(monitor_process)
-
+                
                 # 3. rosbag play 실행
                 time.sleep(5)  # roslaunch가 완전히 실행될 시간을 줌
                 play_bag_process = play_bag_file(bag_file_path)
@@ -115,7 +136,7 @@ def main(root_directory, topic_name, target_node_name):
                 terminate_process_and_children(predict_odom_process)
                 terminate_process_and_children(leica_pose_process)
 
-                average_cpu_usage = monitor_cpu_usage(target_node_name)
+                average_cpu_usage = get_full_process_name_and_cpu_usage(target_node_name)
                 if average_cpu_usage is not None:
                     cpu_file_path = os.path.join(folder_path, "cpu.txt")
                     with open(cpu_file_path, 'w') as cpu_file:
@@ -126,5 +147,5 @@ def main(root_directory, topic_name, target_node_name):
 if __name__ == "__main__":
     root_directory = "/home/mason/bags/ntu_viral"  # 루트 디렉토리 경로를 지정
     topic_name = "/Odometry"  # topic 이름을 지정
-    target_node_name = "/laserMapping"  # 모니터링할 노드의 이름
+    target_node_name = "laserMapping"  # 모니터링할 노드의 이름
     main(root_directory, topic_name, target_node_name)
