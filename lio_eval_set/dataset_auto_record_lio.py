@@ -57,7 +57,7 @@ def run_rostopic_echo(topic, output_file):
 
 def run_monitor_code(folder_path, target_process_name, target_process_name2, odom_topic_name):
     """모니터 코드를 실행"""
-    code999_cmd = ["python", "cpu_usage_recorder.py", folder_path, target_process_name, target_process_name2, odom_topic_name, "/calc_time", "/localizability", "/point_number"]
+    code999_cmd = ["python", "cpu_calct_loc_ptnum_monitor.py", folder_path, target_process_name, target_process_name2, odom_topic_name, "/calc_time", "/localizability", "/point_number"]
     code999_process = subprocess.Popen(code999_cmd, preexec_fn=os.setsid)
     processes.append(code999_process)
     return code999_process
