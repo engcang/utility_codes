@@ -32,10 +32,10 @@ processes = []
 def run_roslaunch():
     """roslaunch 명령어를 실행"""
     # roslaunch_cmd = ["roslaunch", "locus", "ntuviral.launch"]
-    # roslaunch_cmd = ["vglrun", "roslaunch", "ma_lio", "ntu_viral.launch"]
+    # roslaunch_cmd = ["vglrun", "roslaunch", "slict", "run_ntuviral.launch"]
     # roslaunch_cmd = ["roslaunch", "mloam", "mloam_ntuviral.launch"]
-    # roslaunch_cmd = ["vglrun", "roslaunch", "ma_lio", "ntu_viral.launch"]
-    roslaunch_cmd = ["roslaunch", "fast_lio_multi", "run.launch"]
+    roslaunch_cmd = ["roslaunch", "ma_lio", "sim_mid2.launch"]
+#    roslaunch_cmd = ["roslaunch", "fast_lio_multi", "run.launch"]
     roslaunch_process = subprocess.Popen(roslaunch_cmd, preexec_fn=os.setsid)
     processes.append(roslaunch_process)
     return roslaunch_process
@@ -62,7 +62,7 @@ def run_monitor_code(folder_path, target_process_name, target_process_name2, odo
     processes.append(code999_process)
     return code999_process
 
-def main(root_directory, odom_topic_name, sleep_time, target_process_name, target_process_name2):
+def main(root_directory, odom_topic_name, gt_topic_name, sleep_time, target_process_name, target_process_name2):
     for folder in os.listdir(root_directory):
         folder_path = os.path.join(root_directory, folder)
         
@@ -80,7 +80,7 @@ def main(root_directory, odom_topic_name, sleep_time, target_process_name, targe
 
                 # 3. rostopic echo (/leica/pose/relative) 실행
                 leica_pose_file = os.path.join(folder_path, "leica_pose.csv")
-                leica_pose_process = run_rostopic_echo("/leica/pose/relative", leica_pose_file)
+                leica_pose_process = run_rostopic_echo(gt_topic_name, leica_pose_file)
 
                 # 3번과 4번 사이에 모니터 코드 실행
                 code999_process = run_monitor_code(folder_path, target_process_name, target_process_name2, odom_topic_name)
@@ -100,19 +100,20 @@ def main(root_directory, odom_topic_name, sleep_time, target_process_name, targe
                 terminate_process_and_children(code999_process)
 
 if __name__ == "__main__":
-    root_directory = "/home/mason/bags/ntu_viral"  # 루트 디렉토리 경로를 지정
+    root_directory = "/home/mason/bags/sim_mid2"  # 루트 디렉토리 경로를 지정
+    gt_topic_name = "/leica/pose/relative"  # topic 이름을 지정
 
     # async, bundle, ours
-    odom_topic_name = "/Odometry"  # topic 이름을 지정
-    target_process_name = "fast_lio"  # 모니터링할 노드의 이름
-    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
-    sleep_time = 100
+#    odom_topic_name = "/Odometry"  # topic 이름을 지정
+#    target_process_name = "fast_lio"  # 모니터링할 노드의 이름
+#    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
+#    sleep_time = 100
     
     # MA-LIO
-    # odom_topic_name = "/Odometry"  # topic 이름을 지정
-    # target_process_name = "malio_mapping"  # 모니터링할 노드의 이름
-    # target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
-    # sleep_time = 100
+    odom_topic_name = "/Odometry"  # topic 이름을 지정
+    target_process_name = "malio_mapping"  # 모니터링할 노드의 이름
+    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
+    sleep_time = 50
 
     # slict1
     # odom_topic_name = "/opt_odom"  # topic 이름을 지정
@@ -132,4 +133,4 @@ if __name__ == "__main__":
     # target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
     # sleep_time = 100
 
-    main(root_directory, odom_topic_name, sleep_time, target_process_name, target_process_name2)
+    main(root_directory, odom_topic_name, gt_topic_name, sleep_time, target_process_name, target_process_name2)
