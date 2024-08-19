@@ -2,15 +2,13 @@ import os
 import sys
 
 # 명령줄 인수로 prefix를 받습니다.
-if len(sys.argv) != 2:
-    print("사용법: python folder_gen.py <prefix>")
+if len(sys.argv) != 4:
+    print("사용법: python folder_gen.py folder1 folder2 <prefix>")
     sys.exit(1)
 
-prefix = sys.argv[1]
-
-# folder1과 folder2 경로를 지정하세요
-folder1 = './ntu_viral'
-folder2 = './viral_eval'
+prefix = sys.argv[3]
+folder1 = sys.argv[1]
+folder2 = sys.argv[2]
 
 # folder1 안의 모든 폴더 이름을 가져옵니다
 folder_names = [f for f in os.listdir(folder1) if os.path.isdir(os.path.join(folder1, f))]
