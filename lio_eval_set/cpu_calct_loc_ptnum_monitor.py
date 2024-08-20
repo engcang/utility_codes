@@ -7,10 +7,11 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 
 class CPUUsageRecorder:
-    def __init__(self, process_names, interval=1.0, save_path='.', odom_topic='/odom', calc_time_topic='/calc_time', localizability_topic='/localizability', point_num_topic='/point_number'):
+    def __init__(self, process_names, interval=1.0, save_path='.', prefix='', odom_topic='/odom', calc_time_topic='/calc_time', localizability_topic='/localizability', point_num_topic='/point_number'):
         self.process_names = process_names
         self.interval = interval
         self.save_path = save_path
+        self.prefix = prefix
         self.odom_topic = odom_topic
         self.calc_time_topic = calc_time_topic
         self.localizability_topic = localizability_topic
@@ -23,11 +24,11 @@ class CPUUsageRecorder:
         self.last_odom_time = None
         self.last_cpu_record_time = None
 
-        # Create CSV files
-        self.cpu_usage_file = open(os.path.join(self.save_path, 'cpu_usage.csv'), 'w', newline='')
-        self.calc_time_file = open(os.path.join(self.save_path, 'calculation_time.csv'), 'w', newline='')
-        self.localizability_file = open(os.path.join(self.save_path, 'localizability.csv'), 'w', newline='')
-        self.point_num_file = open(os.path.join(self.save_path, 'point_number.csv'), 'w', newline='')
+        # Create CSV files with prefix
+        self.cpu_usage_file = open(os.path.join(self.save_path, f'{self.prefix}cpu_usage.csv'), 'w', newline='')
+        self.calc_time_file = open(os.path.join(self.save_path, f'{self.prefix}calculation_time.csv'), 'w', newline='')
+        self.localizability_file = open(os.path.join(self.save_path, f'{self.prefix}localizability.csv'), 'w', newline='')
+        self.point_num_file = open(os.path.join(self.save_path, f'{self.prefix}point_number.csv'), 'w', newline='')
 
         self.csv_writer_cpu = csv.writer(self.cpu_usage_file)
         self.csv_writer_calc_time = csv.writer(self.calc_time_file)
@@ -118,39 +119,40 @@ class CPUUsageRecorder:
     def save_final_results(self):
         if self.total_cpu_usages:
             final_average_cpu_usage = sum(self.total_cpu_usages) / len(self.total_cpu_usages)
-            with open(os.path.join(self.save_path, 'average_cpu_usage.txt'), 'w') as f:
+            with open(os.path.join(self.save_path, f'{self.prefix}average_cpu_usage.txt'), 'w') as f:
                 f.write(f"Average CPU usage: {final_average_cpu_usage}%\n")
         
         if self.calculation_times:
             final_average_calc_time = sum(self.calculation_times) / len(self.calculation_times)
-            with open(os.path.join(self.save_path, 'average_calculation_time.txt'), 'w') as f:
+            with open(os.path.join(self.save_path, f'{self.prefix}average_calculation_time.txt'), 'w') as f:
                 f.write(f"Average Calculation Time: {final_average_calc_time}\n")
         
         if self.localizability_values:
             final_average_localizability = sum(self.localizability_values) / len(self.localizability_values)
-            with open(os.path.join(self.save_path, 'average_localizability.txt'), 'w') as f:
+            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability.txt'), 'w') as f:
                 f.write(f"Average Localizability: {final_average_localizability}\n")
 
         if self.point_numbers:
             final_average_point_num = sum(self.point_numbers) / len(self.point_numbers)
-            with open(os.path.join(self.save_path, 'average_point_number.txt'), 'w') as f:
+            with open(os.path.join(self.save_path, f'{self.prefix}average_point_number.txt'), 'w') as f:
                 f.write(f"Average Point Number: {final_average_point_num}\n")
 
 
 if __name__ == '__main__':
     import sys
     
-    if len(sys.argv) != 8:
-        print("Usage: cpu_usage_recorder.py <save_path> <process_name1> <process_name2> <odom_topic> <calc_time_topic> <localizability_topic> <point_num_topic>")
+    if len(sys.argv) != 9:
+        print("Usage: cpu_usage_recorder.py <save_path> <prefix> <process_name1> <process_name2> <odom_topic> <calc_time_topic> <localizability_topic> <point_num_topic>")
         sys.exit(1)
     
     save_path = sys.argv[1]
-    process_names = [sys.argv[2], sys.argv[3]]  # Always expect two process names
-    odom_topic = sys.argv[4]
-    calc_time_topic = sys.argv[5]
-    localizability_topic = sys.argv[6]
-    point_num_topic = sys.argv[7]
+    prefix = sys.argv[2]
+    process_names = [sys.argv[3], sys.argv[4]]  # Always expect two process names
+    odom_topic = sys.argv[5]
+    calc_time_topic = sys.argv[6]
+    localizability_topic = sys.argv[7]
+    point_num_topic = sys.argv[8]
 
-    recorder = CPUUsageRecorder(process_names, interval=1.0, save_path=save_path, odom_topic=odom_topic, calc_time_topic=calc_time_topic, localizability_topic=localizability_topic, point_num_topic=point_num_topic)
+    recorder = CPUUsageRecorder(process_names, interval=1.0, save_path=save_path, prefix=prefix, odom_topic=odom_topic, calc_time_topic=calc_time_topic, localizability_topic=localizability_topic, point_num_topic=point_num_topic)
     recorder.start()
 
