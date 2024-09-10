@@ -15,8 +15,12 @@ def move_files(folder1, folder2, prefix):
                 (os.path.join(subdir_path, 'average_cpu_usage.txt'), 'average_cpu_usage.txt'),
                 (os.path.join(subdir_path, 'calculation_time.csv'), 'calculation_time.csv'),
                 (os.path.join(subdir_path, 'average_calculation_time.txt'), 'average_calculation_time.txt'),
-                (os.path.join(subdir_path, 'localizability.csv'), 'localizability.csv'),
-                (os.path.join(subdir_path, 'average_localizability.txt'), 'average_localizability.txt'),
+                (os.path.join(subdir_path, 'localizability_x.csv'), 'localizability_x.csv'),
+                (os.path.join(subdir_path, 'localizability_y.csv'), 'localizability_y.csv'),
+                (os.path.join(subdir_path, 'localizability_z.csv'), 'localizability_z.csv'),
+                (os.path.join(subdir_path, 'average_localizability_x.txt'), 'average_localizability_x.txt'),
+                (os.path.join(subdir_path, 'average_localizability_y.txt'), 'average_localizability_y.txt'),
+                (os.path.join(subdir_path, 'average_localizability_z.txt'), 'average_localizability_z.txt'),
                 (os.path.join(subdir_path, 'point_number.csv'), 'point_number.csv'),
                 (os.path.join(subdir_path, 'average_point_number.txt'), 'average_point_number.txt')
             ]
@@ -41,4 +45,3 @@ if __name__ == "__main__":
     prefix = sys.argv[3]
 
     move_files(folder1, folder2, prefix)
-
