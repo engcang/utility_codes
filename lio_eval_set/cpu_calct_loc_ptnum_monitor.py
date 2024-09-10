@@ -5,6 +5,7 @@ import time
 import os
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
+from std_msgs.msg import Empty
 
 class CPUUsageRecorder:
     def __init__(self, process_names, interval=1.0, save_path='.', prefix='', odom_topic='/odom', calc_time_topic='/calc_time', localizability_topic='/localizability', point_num_topic='/point_number'):
@@ -14,12 +15,14 @@ class CPUUsageRecorder:
         self.prefix = prefix
         self.odom_topic = odom_topic
         self.calc_time_topic = calc_time_topic
-        self.localizability_topic = localizability_topic
+        self.localizability_topics = [f"{localizability_topic}_x", f"{localizability_topic}_y", f"{localizability_topic}_z"]
         self.point_num_topic = point_num_topic
         
         self.total_cpu_usages = []
         self.calculation_times = []
-        self.localizability_values = []
+        self.localizability_values_x = []
+        self.localizability_values_y = []
+        self.localizability_values_z = []
         self.point_numbers = []
         self.last_odom_time = None
         self.last_cpu_record_time = None
@@ -27,17 +30,23 @@ class CPUUsageRecorder:
         # Create CSV files with prefix
         self.cpu_usage_file = open(os.path.join(self.save_path, f'{self.prefix}cpu_usage.csv'), 'w', newline='')
         self.calc_time_file = open(os.path.join(self.save_path, f'{self.prefix}calculation_time.csv'), 'w', newline='')
-        self.localizability_file = open(os.path.join(self.save_path, f'{self.prefix}localizability.csv'), 'w', newline='')
+        self.localizability_file_x = open(os.path.join(self.save_path, f'{self.prefix}localizability_x.csv'), 'w', newline='')
+        self.localizability_file_y = open(os.path.join(self.save_path, f'{self.prefix}localizability_y.csv'), 'w', newline='')
+        self.localizability_file_z = open(os.path.join(self.save_path, f'{self.prefix}localizability_z.csv'), 'w', newline='')
         self.point_num_file = open(os.path.join(self.save_path, f'{self.prefix}point_number.csv'), 'w', newline='')
 
         self.csv_writer_cpu = csv.writer(self.cpu_usage_file)
         self.csv_writer_calc_time = csv.writer(self.calc_time_file)
-        self.csv_writer_localizability = csv.writer(self.localizability_file)
+        self.csv_writer_localizability_x = csv.writer(self.localizability_file_x)
+        self.csv_writer_localizability_y = csv.writer(self.localizability_file_y)
+        self.csv_writer_localizability_z = csv.writer(self.localizability_file_z)
         self.csv_writer_point_num = csv.writer(self.point_num_file)
 
         self.csv_writer_cpu.writerow(['Time', 'CPU Usage (%)'])
         self.csv_writer_calc_time.writerow(['Time', 'Calculation Time'])
-        self.csv_writer_localizability.writerow(['Time', 'Localizability'])
+        self.csv_writer_localizability_x.writerow(['Time', 'Localizability X'])
+        self.csv_writer_localizability_y.writerow(['Time', 'Localizability Y'])
+        self.csv_writer_localizability_z.writerow(['Time', 'Localizability Z'])
         self.csv_writer_point_num.writerow(['Time', 'Point Number'])
 
     def get_process_cpu_usage(self):
@@ -79,10 +88,20 @@ class CPUUsageRecorder:
             self.calculation_times.append(data.data)
             self.csv_writer_calc_time.writerow([self.last_odom_time, data.data])
     
-    def localizability_callback(self, data):
+    def localizability_callback_x(self, data):
         if self.last_odom_time is not None:
-            self.localizability_values.append(data.data)
-            self.csv_writer_localizability.writerow([self.last_odom_time, data.data])
+            self.localizability_values_x.append(data.data)
+            self.csv_writer_localizability_x.writerow([self.last_odom_time, data.data])
+    
+    def localizability_callback_y(self, data):
+        if self.last_odom_time is not None:
+            self.localizability_values_y.append(data.data)
+            self.csv_writer_localizability_y.writerow([self.last_odom_time, data.data])
+    
+    def localizability_callback_z(self, data):
+        if self.last_odom_time is not None:
+            self.localizability_values_z.append(data.data)
+            self.csv_writer_localizability_z.writerow([self.last_odom_time, data.data])
     
     def point_number_callback(self, data):
         if self.last_odom_time is not None:
@@ -93,8 +112,12 @@ class CPUUsageRecorder:
         rospy.init_node('cpu_usage_recorder', anonymous=True)
         rospy.Subscriber(self.odom_topic, Odometry, self.odom_callback)
         rospy.Subscriber(self.calc_time_topic, Float32, self.calculation_time_callback)
-        rospy.Subscriber(self.localizability_topic, Float32, self.localizability_callback)
+        rospy.Subscriber(self.localizability_topics[0], Float32, self.localizability_callback_x)
+        rospy.Subscriber(self.localizability_topics[1], Float32, self.localizability_callback_y)
+        rospy.Subscriber(self.localizability_topics[2], Float32, self.localizability_callback_z)
         rospy.Subscriber(self.point_num_topic, Float32, self.point_number_callback)
+        # In the __init__ method, add the publisher for the Empty message
+        self.no_odom_publisher = rospy.Publisher('/no_odom', Empty, queue_size=10)
         
         try:
             while not rospy.is_shutdown():
@@ -102,6 +125,8 @@ class CPUUsageRecorder:
                 
                 if self.last_odom_time and (current_time - self.last_odom_time > 1.0):
                     rospy.loginfo("No Odometry data received for 1 second, stopping measurement.")
+                    empty_msg = Empty()
+                    self.no_odom_publisher.publish(empty_msg)  # Publish an Empty message
                     break
                 
                 time.sleep(self.interval)
@@ -112,7 +137,9 @@ class CPUUsageRecorder:
         finally:
             self.cpu_usage_file.close()
             self.calc_time_file.close()
-            self.localizability_file.close()
+            self.localizability_file_x.close()
+            self.localizability_file_y.close()
+            self.localizability_file_z.close()
             self.point_num_file.close()
             self.save_final_results()
     
@@ -127,10 +154,20 @@ class CPUUsageRecorder:
             with open(os.path.join(self.save_path, f'{self.prefix}average_calculation_time.txt'), 'w') as f:
                 f.write(f"Average Calculation Time: {final_average_calc_time}\n")
         
-        if self.localizability_values:
-            final_average_localizability = sum(self.localizability_values) / len(self.localizability_values)
-            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability.txt'), 'w') as f:
-                f.write(f"Average Localizability: {final_average_localizability}\n")
+        if self.localizability_values_x:
+            final_average_localizability_x = sum(self.localizability_values_x) / len(self.localizability_values_x)
+            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability_x.txt'), 'w') as f:
+                f.write(f"Average Localizability X: {final_average_localizability_x}\n")
+
+        if self.localizability_values_y:
+            final_average_localizability_y = sum(self.localizability_values_y) / len(self.localizability_values_y)
+            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability_y.txt'), 'w') as f:
+                f.write(f"Average Localizability Y: {final_average_localizability_y}\n")
+
+        if self.localizability_values_z:
+            final_average_localizability_z = sum(self.localizability_values_z) / len(self.localizability_values_z)
+            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability_z.txt'), 'w') as f:
+                f.write(f"Average Localizability Z: {final_average_localizability_z}\n")
 
         if self.point_numbers:
             final_average_point_num = sum(self.point_numbers) / len(self.point_numbers)
@@ -155,4 +192,3 @@ if __name__ == '__main__':
 
     recorder = CPUUsageRecorder(process_names, interval=1.0, save_path=save_path, prefix=prefix, odom_topic=odom_topic, calc_time_topic=calc_time_topic, localizability_topic=localizability_topic, point_num_topic=point_num_topic)
     recorder.start()
-

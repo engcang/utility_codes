@@ -3,6 +3,11 @@ import subprocess
 import time
 import sys
 import signal
+import rospy
+from std_msgs.msg import Empty
+
+processes = []
+
 
 def terminate_process_and_children(p):
     """프로세스와 모든 자식 프로세스를 종료"""
@@ -27,15 +32,20 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-processes = []
+def no_odom_callback(data):
+    """ /no_odom 토픽 메시지를 받으면 프로세스 종료 """
+    rospy.loginfo("Received /no_odom message. Terminating processes...")
+    for p in processes:
+        terminate_process_and_children(p)
+    rospy.signal_shutdown("No Odometry data received.")
 
 def run_roslaunch():
     """roslaunch 명령어를 실행"""
     # roslaunch_cmd = ["roslaunch", "locus", "ntuviral.launch"]
-    roslaunch_cmd = ["roslaunch", "slict", "run_sim_midavia.launch"]
+    #roslaunch_cmd = ["vglrun", "roslaunch", "slict", "run_sim_mid2.launch"]
     # roslaunch_cmd = ["roslaunch", "mloam", "mloam_ntuviral.launch"]
 #    roslaunch_cmd = ["roslaunch", "ma_lio", "sim_midavia.launch"]
-#    roslaunch_cmd = ["roslaunch", "fast_lio_multi", "run.launch"]
+    roslaunch_cmd = ["roslaunch", "fast_lio_multi", "run.launch"]
     roslaunch_process = subprocess.Popen(roslaunch_cmd, preexec_fn=os.setsid)
     processes.append(roslaunch_process)
     return roslaunch_process
@@ -62,7 +72,11 @@ def run_monitor_code(folder_path, target_process_name, target_process_name2, odo
     processes.append(code999_process)
     return code999_process
 
-def main(root_directory, odom_topic_name, gt_topic_name, sleep_time, target_process_name, target_process_name2):
+def main(root_directory, odom_topic_name, gt_topic_name, target_process_name, target_process_name2):
+    # ROS 노드 초기화
+    rospy.init_node('dataset_auto_record_lio', anonymous=True)
+    rospy.Subscriber("/no_odom", Empty, no_odom_callback)
+    
     for folder in os.listdir(root_directory):
         folder_path = os.path.join(root_directory, folder)
         
@@ -92,45 +106,44 @@ def main(root_directory, odom_topic_name, gt_topic_name, sleep_time, target_proc
                 # 5. rosbag play 종료 대기
                 play_bag_process.wait()
 
-                # 6. roslaunch, rostopic echo, 코드999 프로세스 종료
-                time.sleep(sleep_time)  # roslaunch가 완전히 실행될 시간을 줌
+                # 6. /no_odom 메시지를 대기하다가 수신 시 프로세스 종료
+                rospy.spin()  # ROS 콜백을 계속 대기
+                # 여기서 종료 처리를 할 필요가 없으나, rospy.spin()이 종료되면 아래 코드로 모든 프로세스를 정리
                 terminate_process_and_children(roslaunch_process)
                 terminate_process_and_children(predict_odom_process)
                 terminate_process_and_children(leica_pose_process)
                 terminate_process_and_children(code999_process)
 
 if __name__ == "__main__":
-    root_directory = "/home/mason/bags/sim_midavia"  # 루트 디렉토리 경로를 지정
+    #root_directory = "/home/mason/bags/ntu_viral"  # 루트 디렉토리 경로를 지정
+    #gt_topic_name = "/leica/pose/relative"  # topic 이름을 지정
+
+    root_directory = "/home/mason/bags/sim_mid2"  # 루트 디렉토리 경로를 지정
     gt_topic_name = "/mavros/vision_pose/pose"  # topic 이름을 지정
 
     # async, bundle, ours
-#    odom_topic_name = "/Odometry"  # topic 이름을 지정
-#    target_process_name = "fast_lio"  # 모니터링할 노드의 이름
-#    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
-#    sleep_time = 100
+    odom_topic_name = "/Odometry"  # topic 이름을 지정
+    target_process_name = "fast_lio"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
     
     # MA-LIO
 #    odom_topic_name = "/Odometry"  # topic 이름을 지정
-#    target_process_name = "malio_mapping"  # 모니터링할 노드의 이름
-#    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
-#    sleep_time = 50
+#    target_process_name = "malio_mapping"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+#    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
 
     # slict1
-    odom_topic_name = "/opt_odom"  # topic 이름을 지정
-    target_process_name = "slict_esti"  # 모니터링할 노드의 이름
-    target_process_name2 = "slict_sensor"  # 모니터링할 노드의 이름
-    sleep_time = 100
+    #odom_topic_name = "/opt_odom"  # topic 이름을 지정
+    #target_process_name = "slict_esti"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    #target_process_name2 = "slict_sensor"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
 
     # locus2
     # odom_topic_name = "/ntuviral/locus/odometry"  # topic 이름을 지정
-    # target_process_name = "locus"  # 모니터링할 노드의 이름
-    # target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름
-    # sleep_time = 100
+    # target_process_name = "locus"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    # target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
     
     # mloam
     # odom_topic_name = "/laser_map_high_frec"  # topic 이름을 지정
-    # target_process_name = "mloam"  # 모니터링할 노드의 이름
-    # target_process_name2 = "lidar_mapper"  # 모니터링할 노드의 이름
-    # sleep_time = 100
+    # target_process_name = "mloam"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    # target_process_name2 = "lidar_mapper"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
 
-    main(root_directory, odom_topic_name, gt_topic_name, sleep_time, target_process_name, target_process_name2)
+    main(root_directory, odom_topic_name, gt_topic_name, target_process_name, target_process_name2)
