@@ -1,4 +1,4 @@
-function P_est_ate = evaluate_one(test_id, test_fullname)
+function P_est_ate = evaluate_one(test_id, test_fullname, stripped_name)
 
 close all;
 
@@ -8,22 +8,27 @@ fighd = [];
 exp_name =  test_fullname.name;
 exp_path = [test_fullname.folder '/' test_fullname.name '/'];
 
-gndtr_pos_fn     = [exp_path 'leica_pose.csv'];
+gndtr_pos_fn     = [exp_path stripped_name '.txt'];
 pose_est_fn      = [exp_path 'predict_odom.csv'];
 trans_B2prism_fn = [exp_path '../trans_B2prism.csv'];
 
-
 %% Read the gndtr data from logs
-
 % Position groundtr
-gndtr_pos_data = csvread(gndtr_pos_fn,  1, 0);
-
+fid = fopen(gndtr_pos_fn, 'r');
+if fid == -1
+    error('파일을 열 수 없습니다.');
+end
+% 공백으로 구분된 데이터를 읽기, 형식은 실수형(float)이므로 %f로 지정
+data = textscan(fid, '%f %f %f %f %f %f %f %f');
+fclose(fid);
+% 결과 확인 (각 열은 cell 배열로 반환되므로 cell 배열을 매트릭스로 변환)
+gndtr_pos_data = cell2mat(data);
 % First sample time used for offsetting all others
 t0_ns = gndtr_pos_data(1, 1);
 
 % pos groundtruthdata
-t = (gndtr_pos_data(:, 1) - t0_ns)/1e9;
-P = gndtr_pos_data(:, 4:6);
+t = (gndtr_pos_data(:, 1) - t0_ns);
+P = gndtr_pos_data(:, 2:4);
 
 % Delete the duplicate in position groundtruth data
 [~, Px_unq_idx] = unique(P(:, 1));
@@ -38,7 +43,7 @@ t = t(P_unq_idx, :);
 %% Read the viralslam estimate data from logs
 % SLAM estimate
 pose_est_data = csvread(pose_est_fn, 1, 0);
-t_est = (pose_est_data(:, 1) - t0_ns)/1e9;
+t_est = (pose_est_data(:, 1)/1e9) - t0_ns;
 P_est =  pose_est_data(:, 4:6);
 Q_est = (pose_est_data(:, [10, 7:9]));
 V_est =  pose_est_data(:, 11:13);
@@ -53,9 +58,8 @@ P_est = P_est + quatconv(Q_est, trans_B2prism);
 %% Resample the ground truth data by estimate data sample times
 
 % Note affix rs[x] is for resampled by [x]
-
 % Find the interpolated time stamps
-[rsest_pos_itp_idx(:, 1), rsest_pos_itp_idx(:, 2)] = combteeth(t_est, t, 0.1);
+[rsest_pos_itp_idx(:, 1), rsest_pos_itp_idx(:, 2)] = combteeth(t_est, t, 50);
 
 % Remove the un-associatable samples
 rsest_nan_idx = find(isnan(rsest_pos_itp_idx(:, 1)) | isnan(rsest_pos_itp_idx(:, 2)));
@@ -127,7 +131,7 @@ P_est_ate     = norm(P_est_rmse);
 
 %% Print the result
 fprintf('test: %2d. %s. Err: P_est_ate: %6.3f\n',...
-          test_id, exp_name(8:end), P_est_ate);
+          test_id, exp_name, P_est_ate);
 
 
 
