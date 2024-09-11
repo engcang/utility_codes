@@ -46,7 +46,6 @@ pose_est_data = csvread(pose_est_fn, 1, 0);
 t_est = (pose_est_data(:, 1)/1e9) - t0_ns;
 P_est =  pose_est_data(:, 4:6);
 Q_est = (pose_est_data(:, [10, 7:9]));
-V_est =  pose_est_data(:, 11:13);
 
 % Transform from body frame to the prism
 trans_B2prism = csvread(trans_B2prism_fn, 0, 0);
@@ -54,45 +53,33 @@ trans_B2prism = csvread(trans_B2prism_fn, 0, 0);
 % Compensate the position estimate with the prism displacement
 P_est = P_est + quatconv(Q_est, trans_B2prism);
 
+% backup full data
+t_est_full = t_est;
+P_est_full = P_est;
 
 %% Resample the ground truth data by estimate data sample times
 
 % Note affix rs[x] is for resampled by [x]
 % Find the interpolated time stamps
-[rsest_pos_itp_idx(:, 1), rsest_pos_itp_idx(:, 2)] = combteeth(t_est, t, 50);
+[rsest_pos_itp_idx(:, 1), rsest_pos_itp_idx(:, 2)] = combteeth(t_est, t, 0.1); %0.1초 오차 이내 사용
 
 % Remove the un-associatable samples
 rsest_nan_idx = find(isnan(rsest_pos_itp_idx(:, 1)) | isnan(rsest_pos_itp_idx(:, 2)));
 
-t_est_full = t_est;
-P_est_full = P_est;
-Q_est_full = Q_est;
-V_est_full = V_est;
-
 rsest_pos_itp_idx(rsest_nan_idx, :) = [];
 t_est(rsest_nan_idx, :)     = [];
 P_est(rsest_nan_idx, :)     = [];
-Q_est(rsest_nan_idx, :)     = [];
-V_est(rsest_nan_idx, :)     = [];
 
 % interpolate the pos gndtr state
 P_rsest = vecitp(P, t, t_est, rsest_pos_itp_idx);
 
+%% Align and tf
 % find the optimal alignment
 [rot_align_est, trans_align_est] = traj_align(P_rsest, P_est);
 
 % Align the position estimate
 P_est      = (rot_align_est*P_est'      + trans_align_est)';
 P_est_full = (rot_align_est*P_est_full' + trans_align_est)';
-
-% Align the orientaton estimate
-Q_est      = quatmultiply(rotm2quat(rot_align_est), Q_est);
-Q_est_full = quatmultiply(rotm2quat(rot_align_est), Q_est);
-
-% Align the velocity estimate
-V_est      = (rot_align_est*V_est')';
-V_est_full = (rot_align_est*V_est_full')';
-
 
 % Export the leica transform to a yaml file
 fileID = fopen([exp_path 'leica_tf.yaml'], 'w');

@@ -8,22 +8,42 @@ Kb  = length(tb);
 p_idx = ones(Ka, 1);
 s_idx = ones(Ka, 1);
 
-last_tb_idx = 1;
+if Kb >= Ka
+    last_tb_idx = 1;
+    for k=1:Ka
+        
+        p_idx(k) = NaN;
+        s_idx(k) = NaN;
+        
+        for n=last_tb_idx:Kb-1
+            if tb(n) <= ta(k) && ta(k) < tb(n+1) && (abs(tb(n+1) - tb(n)) < dtmax)
+                p_idx(k) = n;
+                s_idx(k) = n+1;
+                last_tb_idx = n;
+                break;
+            end
+        end
+    end
 
-for k=1:Ka
-    
-    p_idx(k) = NaN;
-    s_idx(k) = NaN;
-    
-    for n=last_tb_idx:Kb-1
-        if tb(n) <= ta(k) && ta(k) < tb(n+1) && abs(tb(n+1) - tb(n)) < dtmax
-            p_idx(k) = n;
-            s_idx(k) = n+1;
-            last_tb_idx = n;
-            break;
+elseif Ka > Kb
+    last_tb_idx = 1;
+    for k=1:Ka
+        
+        p_idx(k) = NaN;
+        s_idx(k) = NaN;
+        
+        for n=last_tb_idx:Kb-1
+            if tb(n) <= ta(k) && ta(k) < tb(n+1)
+                if (abs(tb(n) - ta(k)) < dtmax) || (abs(tb(n+1) - ta(k)) < dtmax)
+                    p_idx(k) = n;
+                    s_idx(k) = n+1;
+                    last_tb_idx = n;
+                    break;
+                end
+            end
         end
     end
 end
 
-end
 
+end

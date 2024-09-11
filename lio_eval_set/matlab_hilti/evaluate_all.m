@@ -7,7 +7,7 @@ path        = matlab.desktop.editor.getActiveFilename;
 this_dir    = path(1: end - length(mfilename) - 2);
 cd(this_dir);
 
-prefix      = 'malio_';
+prefix      = 'fastlio_async_';
 tests       = dir([this_dir prefix '*']);
 tests_count = length(tests);
 
@@ -32,3 +32,5 @@ save('evaluation_result.mat', 'ATE_POSE');
 ATE_POSE
 
 toc
+
+close all;
