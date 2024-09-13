@@ -123,7 +123,7 @@ class CPUUsageRecorder:
             while not rospy.is_shutdown():
                 current_time = time.time()
                 
-                if self.last_odom_time and (current_time - self.last_odom_time > 1.0):
+                if self.last_odom_time and (current_time - self.last_odom_time > 2.0):
                     rospy.loginfo("No Odometry data received for 1 second, stopping measurement.")
                     empty_msg = Empty()
                     self.no_odom_publisher.publish(empty_msg)  # Publish an Empty message
