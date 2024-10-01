@@ -18,7 +18,7 @@ def move_files(folder1, folder2, prefix):
                 (os.path.join(subdir_path, 'localizability_x.csv'), 'localizability_x.csv'),
                 (os.path.join(subdir_path, 'localizability_y.csv'), 'localizability_y.csv'),
                 (os.path.join(subdir_path, 'localizability_z.csv'), 'localizability_z.csv'),
-                (os.path.join(subdir_path, 'average_point_number.txt'), 'average_point_number.txt'),
+                (os.path.join(subdir_path, 'point_number.csv'), 'point_number.csv'),
                 (os.path.join(subdir_path, 'velocity.csv'), 'velocity.csv'),
                 (os.path.join(subdir_path, 'acc_bias.csv'), 'acc_bias.csv')
             ]
