@@ -43,10 +43,10 @@ def run_roslaunch():
     global processes
     """roslaunch 명령어를 실행"""
     #roslaunch_cmd = ["roslaunch", "locus", "hilti2021.launch"]
-    roslaunch_cmd = ["roslaunch", "slict", "run_hilti2021.launch"]
+    #roslaunch_cmd = ["roslaunch", "slict", "run_hilti2021.launch"]
     # roslaunch_cmd = ["roslaunch", "mloam", "mloam_ntuviral.launch"]
     #roslaunch_cmd = ["roslaunch", "ma_lio", "hilti2021.launch"]
-    #roslaunch_cmd = ["roslaunch", "fast_lio_multi", "run.launch"]
+    roslaunch_cmd = ["roslaunch", "fast_lio_multi", "run.launch"]
     roslaunch_process = subprocess.Popen(roslaunch_cmd, preexec_fn=os.setsid)
     processes.append(roslaunch_process)
     return roslaunch_process
@@ -71,7 +71,7 @@ def run_rostopic_echo(topic, output_file):
 def run_monitor_code(folder_path, target_process_name, target_process_name2, odom_topic_name):
     global processes
     """모니터 코드를 실행"""
-    code999_cmd = ["python", "cpu_calct_loc_ptnum_monitor.py", folder_path, '', target_process_name, target_process_name2, odom_topic_name, "/calc_time", "/localizability", "/point_number"]
+    code999_cmd = ["python", "cpu_calct_loc_ptnum_monitor.py", folder_path, '', target_process_name, target_process_name2, odom_topic_name, "/calc_time", "/localizability", "/point_number", "/velocity", "/acc_bias"]
     code999_process = subprocess.Popen(code999_cmd, preexec_fn=os.setsid)
     processes.append(code999_process)
     return code999_process
@@ -127,9 +127,9 @@ if __name__ == "__main__":
     gt_topic_name = "/leica/pose/relative"  # topic 이름을 지정
 
     # async, bundle, ours
-    #odom_topic_name = "/Odometry"  # topic 이름을 지정
-    #target_process_name = "fast_lio"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
-    #target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    odom_topic_name = "/Odometry"  # topic 이름을 지정
+    target_process_name = "fast_lio"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
     
     # MA-LIO
     #odom_topic_name = "/Odometry"  # topic 이름을 지정
@@ -137,9 +137,9 @@ if __name__ == "__main__":
     #target_process_name2 = "ASUDFASUFDSUFSDAFU"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
 
     # slict1
-    odom_topic_name = "/opt_odom"  # topic 이름을 지정
-    target_process_name = "slict_esti"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
-    target_process_name2 = "slict_sensor"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    #odom_topic_name = "/opt_odom"  # topic 이름을 지정
+    #target_process_name = "slict_esti"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
+    #target_process_name2 = "slict_sensor"  # 모니터링할 노드의 이름: launch파일에서 node의 type!!!
 
     # locus2
     # odom_topic_name = "/ntuviral/locus/odometry"  # topic 이름을 지정

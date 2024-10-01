@@ -6,9 +6,11 @@ import os
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 from std_msgs.msg import Empty
+from geometry_msgs.msg import Vector3
 
 class CPUUsageRecorder:
-    def __init__(self, process_names, interval=1.0, save_path='.', prefix='', odom_topic='/odom', calc_time_topic='/calc_time', localizability_topic='/localizability', point_num_topic='/point_number'):
+    def __init__(self, process_names, interval=1.0, save_path='.', prefix='', odom_topic='/odom', calc_time_topic='/calc_time',
+                 localizability_topic='/localizability', point_num_topic='/point_number', velocity_topic='/velocity', acc_bias='/acc_bias'):
         self.process_names = process_names
         self.interval = interval
         self.save_path = save_path
@@ -17,13 +19,11 @@ class CPUUsageRecorder:
         self.calc_time_topic = calc_time_topic
         self.localizability_topics = [f"{localizability_topic}_x", f"{localizability_topic}_y", f"{localizability_topic}_z"]
         self.point_num_topic = point_num_topic
+        self.velocity_topic = velocity_topic
+        self.acc_bias = acc_bias
         
         self.total_cpu_usages = []
         self.calculation_times = []
-        self.localizability_values_x = []
-        self.localizability_values_y = []
-        self.localizability_values_z = []
-        self.point_numbers = []
         self.last_odom_time = None
         self.last_cpu_record_time = None
 
@@ -34,6 +34,8 @@ class CPUUsageRecorder:
         self.localizability_file_y = open(os.path.join(self.save_path, f'{self.prefix}localizability_y.csv'), 'w', newline='')
         self.localizability_file_z = open(os.path.join(self.save_path, f'{self.prefix}localizability_z.csv'), 'w', newline='')
         self.point_num_file = open(os.path.join(self.save_path, f'{self.prefix}point_number.csv'), 'w', newline='')
+        self.velocity_file = open(os.path.join(self.save_path, f'{self.prefix}velocity.csv'), 'w', newline='')
+        self.acc_bias_file = open(os.path.join(self.save_path, f'{self.prefix}acc_bias.csv'), 'w', newline='')
 
         self.csv_writer_cpu = csv.writer(self.cpu_usage_file)
         self.csv_writer_calc_time = csv.writer(self.calc_time_file)
@@ -41,6 +43,8 @@ class CPUUsageRecorder:
         self.csv_writer_localizability_y = csv.writer(self.localizability_file_y)
         self.csv_writer_localizability_z = csv.writer(self.localizability_file_z)
         self.csv_writer_point_num = csv.writer(self.point_num_file)
+        self.csv_writer_velocity = csv.writer(self.velocity_file)
+        self.csv_writer_acc_bias = csv.writer(self.acc_bias_file)
 
         self.csv_writer_cpu.writerow(['Time', 'CPU Usage (%)'])
         self.csv_writer_calc_time.writerow(['Time', 'Calculation Time'])
@@ -48,6 +52,8 @@ class CPUUsageRecorder:
         self.csv_writer_localizability_y.writerow(['Time', 'Localizability Y'])
         self.csv_writer_localizability_z.writerow(['Time', 'Localizability Z'])
         self.csv_writer_point_num.writerow(['Time', 'Point Number'])
+        self.csv_writer_velocity.writerow(['Time', 'vel_x', 'vel_y', 'vel_z'])
+        self.csv_writer_acc_bias.writerow(['Time', 'acc_bias_x', 'acc_bias_y', 'acc_bias_z'])
 
     def get_process_cpu_usage(self):
         cpu_usage_sum = 0
@@ -90,23 +96,27 @@ class CPUUsageRecorder:
     
     def localizability_callback_x(self, data):
         if self.last_odom_time is not None:
-            self.localizability_values_x.append(data.data)
             self.csv_writer_localizability_x.writerow([self.last_odom_time, data.data])
     
     def localizability_callback_y(self, data):
         if self.last_odom_time is not None:
-            self.localizability_values_y.append(data.data)
             self.csv_writer_localizability_y.writerow([self.last_odom_time, data.data])
     
     def localizability_callback_z(self, data):
         if self.last_odom_time is not None:
-            self.localizability_values_z.append(data.data)
             self.csv_writer_localizability_z.writerow([self.last_odom_time, data.data])
     
     def point_number_callback(self, data):
         if self.last_odom_time is not None:
-            self.point_numbers.append(data.data)
             self.csv_writer_point_num.writerow([self.last_odom_time, data.data])
+    
+    def velocity_callback(self, data):
+        if self.last_odom_time is not None:
+            self.csv_writer_velocity.writerow([self.last_odom_time, data.x, data.y, data.z])
+    
+    def acc_bias_callback(self, data):
+        if self.last_odom_time is not None:
+            self.csv_writer_acc_bias.writerow([self.last_odom_time, data.x, data.y, data.z])
 
     def start(self):
         rospy.init_node('cpu_usage_recorder', anonymous=True)
@@ -116,6 +126,8 @@ class CPUUsageRecorder:
         rospy.Subscriber(self.localizability_topics[1], Float32, self.localizability_callback_y)
         rospy.Subscriber(self.localizability_topics[2], Float32, self.localizability_callback_z)
         rospy.Subscriber(self.point_num_topic, Float32, self.point_number_callback)
+        rospy.Subscriber(self.velocity_topic, Vector3, self.velocity_callback)
+        rospy.Subscriber(self.acc_bias, Vector3, self.acc_bias_callback)
         # In the __init__ method, add the publisher for the Empty message
         self.no_odom_publisher = rospy.Publisher('/no_odom', Empty, queue_size=10)
         
@@ -123,7 +135,7 @@ class CPUUsageRecorder:
             while not rospy.is_shutdown():
                 current_time = time.time()
                 
-                if self.last_odom_time and (current_time - self.last_odom_time > 2.0):
+                if self.last_odom_time and (current_time - self.last_odom_time > 1.0):
                     rospy.loginfo("No Odometry data received for 1 second, stopping measurement.")
                     empty_msg = Empty()
                     self.no_odom_publisher.publish(empty_msg)  # Publish an Empty message
@@ -141,6 +153,8 @@ class CPUUsageRecorder:
             self.localizability_file_y.close()
             self.localizability_file_z.close()
             self.point_num_file.close()
+            self.velocity_file.close()
+            self.acc_bias_file.close()
             self.save_final_results()
     
     def save_final_results(self):
@@ -153,33 +167,13 @@ class CPUUsageRecorder:
             final_average_calc_time = sum(self.calculation_times) / len(self.calculation_times)
             with open(os.path.join(self.save_path, f'{self.prefix}average_calculation_time.txt'), 'w') as f:
                 f.write(f"Average Calculation Time: {final_average_calc_time}\n")
-        
-        if self.localizability_values_x:
-            final_average_localizability_x = sum(self.localizability_values_x) / len(self.localizability_values_x)
-            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability_x.txt'), 'w') as f:
-                f.write(f"Average Localizability X: {final_average_localizability_x}\n")
-
-        if self.localizability_values_y:
-            final_average_localizability_y = sum(self.localizability_values_y) / len(self.localizability_values_y)
-            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability_y.txt'), 'w') as f:
-                f.write(f"Average Localizability Y: {final_average_localizability_y}\n")
-
-        if self.localizability_values_z:
-            final_average_localizability_z = sum(self.localizability_values_z) / len(self.localizability_values_z)
-            with open(os.path.join(self.save_path, f'{self.prefix}average_localizability_z.txt'), 'w') as f:
-                f.write(f"Average Localizability Z: {final_average_localizability_z}\n")
-
-        if self.point_numbers:
-            final_average_point_num = sum(self.point_numbers) / len(self.point_numbers)
-            with open(os.path.join(self.save_path, f'{self.prefix}average_point_number.txt'), 'w') as f:
-                f.write(f"Average Point Number: {final_average_point_num}\n")
 
 
 if __name__ == '__main__':
     import sys
     
-    if len(sys.argv) != 9:
-        print("Usage: cpu_usage_recorder.py <save_path> <prefix> <process_name1> <process_name2> <odom_topic> <calc_time_topic> <localizability_topic> <point_num_topic>")
+    if len(sys.argv) != 11:
+        print("Usage: cpu_usage_recorder.py <save_path> <prefix> <process_name1> <process_name2> <odom_topic> <calc_time_topic> <localizability_topic> <point_num_topic> <velocity_topic> <acc_bias>")
         sys.exit(1)
     
     save_path = sys.argv[1]
@@ -189,6 +183,10 @@ if __name__ == '__main__':
     calc_time_topic = sys.argv[6]
     localizability_topic = sys.argv[7]
     point_num_topic = sys.argv[8]
+    velocity_topic = sys.argv[9]
+    acc_bias = sys.argv[10]
 
-    recorder = CPUUsageRecorder(process_names, interval=1.0, save_path=save_path, prefix=prefix, odom_topic=odom_topic, calc_time_topic=calc_time_topic, localizability_topic=localizability_topic, point_num_topic=point_num_topic)
+    recorder = CPUUsageRecorder(process_names, interval=1.0, save_path=save_path, prefix=prefix, odom_topic=odom_topic, 
+                                calc_time_topic=calc_time_topic, localizability_topic=localizability_topic, point_num_topic=point_num_topic,
+                                velocity_topic=velocity_topic, acc_bias=acc_bias)
     recorder.start()
