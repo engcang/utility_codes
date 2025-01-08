@@ -20,7 +20,6 @@ ROOT_DIRECTORIES=(
     "/media/mason/Datasets/MulRan"
     "/media/mason/Datasets/2022hilti"
     "/media/mason/Datasets/2021hilti"
-    "/media/mason/Datasets/2021hilti"
 )
 SAVE_DIRECTORIES=(
     "/media/mason/Datasets/results_eval_single/subt"
@@ -30,11 +29,9 @@ SAVE_DIRECTORIES=(
     "/media/mason/Datasets/results_eval_single/ncd"
     "/media/mason/Datasets/results_eval_single/mulran"
     "/media/mason/Datasets/results_eval_single/2022hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti"
     "/media/mason/Datasets/results_eval_single/2021hilti_os"
 )
 PACKAGE_NAMES=(
-    "lio_sam_6axis"
     "lio_sam_6axis"
     "lio_sam_6axis"
     "lio_sam_6axis"
@@ -52,11 +49,9 @@ LAUNCH_FILE_NAMES=(
     "ncd.launch"
     "mulran.launch"
     "2022hilti.launch"
-    "2021hilti.launch"
     "2021hilti_os.launch"
 )
 ODOM_TOPIC_NAMES=(
-    "/lio_sam_6axis/mapping/odometry"
     "/lio_sam_6axis/mapping/odometry"
     "/lio_sam_6axis/mapping/odometry"
     "/lio_sam_6axis/mapping/odometry"
@@ -75,7 +70,6 @@ TARGET_PROCESS_NAMES=(
     "lio_sam_6axis_mapOptmization"
     "lio_sam_6axis_mapOptmization"
     "lio_sam_6axis_mapOptmization"
-    "lio_sam_6axis_mapOptmization"
 )
 TARGET_PROCESS_NAMES_2=(
     "lio_sam_6axis_imageProjection"
@@ -86,10 +80,8 @@ TARGET_PROCESS_NAMES_2=(
     "lio_sam_6axis_imageProjection"
     "lio_sam_6axis_imageProjection"
     "lio_sam_6axis_imageProjection"
-    "lio_sam_6axis_imageProjection"
 )
 ALGORITHM_NAMES=(
-    "liosam_"
     "liosam_"
     "liosam_"
     "liosam_"
