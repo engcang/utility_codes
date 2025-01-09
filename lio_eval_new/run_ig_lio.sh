@@ -67,15 +67,15 @@ ODOM_TOPIC_NAMES=(
     "/lio_odom"
 )
 TARGET_PROCESS_NAMES=(
-    "ig_lio_node"
-    "ig_lio_node"
-    "ig_lio_node"
-    "ig_lio_node"
-    "ig_lio_node"
-    "ig_lio_node"
-    "ig_lio_node"
-    "ig_lio_node"
-    "ig_lio_node"
+    "ig_lio_"
+    "ig_lio_"
+    "ig_lio_"
+    "ig_lio_"
+    "ig_lio_"
+    "ig_lio_"
+    "ig_lio_"
+    "ig_lio_"
+    "ig_lio_"
 )
 TARGET_PROCESS_NAMES_2=(
     "XXXXX"

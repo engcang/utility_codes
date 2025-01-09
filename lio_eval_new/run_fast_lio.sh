@@ -67,15 +67,15 @@ ODOM_TOPIC_NAMES=(
     "/Odometry"
 )
 TARGET_PROCESS_NAMES=(
-    "fastlio_mapping"
-    "fastlio_mapping"
-    "fastlio_mapping"
-    "fastlio_mapping"
-    "fastlio_mapping"
-    "fastlio_mapping"
-    "fastlio_mapping"
-    "fastlio_mapping"
-    "fastlio_mapping"
+    "fastlio_map"
+    "fastlio_map"
+    "fastlio_map"
+    "fastlio_map"
+    "fastlio_map"
+    "fastlio_map"
+    "fastlio_map"
+    "fastlio_map"
+    "fastlio_map"
 )
 TARGET_PROCESS_NAMES_2=(
     "XXXXX"

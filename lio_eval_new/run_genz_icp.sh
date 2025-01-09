@@ -67,15 +67,15 @@ ODOM_TOPIC_NAMES=(
     "/genz/odometry"
 )
 TARGET_PROCESS_NAMES=(
-    "odometry_node"
-    "odometry_node"
-    "odometry_node"
-    "odometry_node"
-    "odometry_node"
-    "odometry_node"
-    "odometry_node"
-    "odometry_node"
-    "odometry_node"
+    "odometry_"
+    "odometry_"
+    "odometry_"
+    "odometry_"
+    "odometry_"
+    "odometry_"
+    "odometry_"
+    "odometry_"
+    "odometry_"
 )
 TARGET_PROCESS_NAMES_2=(
     "XXXXX"

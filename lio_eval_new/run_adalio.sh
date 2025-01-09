@@ -67,15 +67,15 @@ ODOM_TOPIC_NAMES=(
     "/Odometry"
 )
 TARGET_PROCESS_NAMES=(
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
-    "ada_lio_dynamic_node"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
+    "ada_lio_dynamic"
 )
 TARGET_PROCESS_NAMES_2=(
     "XXXXX"

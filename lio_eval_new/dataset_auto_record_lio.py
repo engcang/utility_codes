@@ -96,30 +96,26 @@ def main(root_directory, file_save_root_directory, package_name, launch_file_nam
                     livox_convert_process = run_livox_convert_code()
                     time.sleep(2)
                 roslaunch_process = run_roslaunch(package_name, launch_file_name)
-                time.sleep(3)  # roslaunch가 완전히 실행될 시간을 줌
+                time.sleep(2)  # roslaunch가 완전히 실행될 시간을 줌
 
                 # 3번과 4번 사이에 모니터 코드 실행
                 code999_process = run_monitor_code(file_save_path, algorithm_name, target_process_name, target_process_name2, odom_topic_name)
                 
                 # 4. rosbag play 실행
-                time.sleep(3)  # roslaunch가 완전히 실행될 시간을 줌
+                time.sleep(2)  # roslaunch가 완전히 실행될 시간을 줌
                 play_bag_process = play_bag_file(bag_file_path)
 
                 # 5. rosbag play 종료 대기
                 play_bag_process.wait()
 
-                # 6. /no_odom 메시지를 대기하다가 수신 시 프로세스 종료
-                while not callback_received_ready_to_terminate:
-                    rospy.sleep(1)
-                # 콜백 수신 후 프로세스 종료
-                if callback_received_ready_to_terminate:
-                    if velodyne_roslaunch_process is not None:
-                        terminate_process_and_children(velodyne_roslaunch_process)
-                    if livox_convert_process is not None:
-                        terminate_process_and_children(livox_convert_process)
-                    terminate_process_and_children(roslaunch_process)
-                    terminate_process_and_children(code999_process)
-                    callback_received_ready_to_terminate = False # 플래그 리셋
+                # 6. Bag 파일 재생이 끝나면 3초 대기 후 프로세스 종료
+                rospy.sleep(2)
+                if velodyne_roslaunch_process is not None:
+                    terminate_process_and_children(velodyne_roslaunch_process)
+                if livox_convert_process is not None:
+                    terminate_process_and_children(livox_convert_process)
+                terminate_process_and_children(roslaunch_process)
+                terminate_process_and_children(code999_process)
 
 if __name__ == "__main__":
     if len(sys.argv) != 9:

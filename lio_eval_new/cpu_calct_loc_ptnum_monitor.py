@@ -95,7 +95,9 @@ class CPUUsageRecorder:
         qy = data.pose.pose.orientation.y
         qz = data.pose.pose.orientation.z
         qw = data.pose.pose.orientation.w
-        self.csv_writer_odom.writerow([timestamp, tx, ty, tz, qx, qy, qz, qw])
+        if timestamp > 0:
+            self.csv_writer_odom.writerow([timestamp, tx, ty, tz, qx, qy, qz, qw])
+
     def calculation_time_callback(self, data):
         if self.last_odom_time is not None:
             self.calculation_times.append(data.data)
@@ -135,12 +137,6 @@ class CPUUsageRecorder:
         
         try:
             while not rospy.is_shutdown():
-                current_time = time.time()
-                if self.last_odom_time and (current_time - self.last_odom_time > 1.5):
-                    rospy.loginfo("No Odometry data received for 1.5 second, stopping measurement.")
-                    empty_msg = Empty()
-                    self.no_odom_publisher.publish(empty_msg)  # Publish an Empty message
-                    break
                 time.sleep(self.interval)
         except KeyboardInterrupt:
             rospy.loginfo("Measurement stopped by user.")
