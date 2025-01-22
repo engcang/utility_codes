@@ -17,7 +17,7 @@ class CPUUsageRecorder:
         self.prefix = prefix
         self.odom_topic = odom_topic
         self.calc_time_topic = calc_time_topic
-        self.localizability_topics = [f"{localizability_topic}_x", f"{localizability_topic}_y", f"{localizability_topic}_z", f"{localizability_topic}_r", f"{localizability_topic}_p", f"{localizability_topic}_yy"]
+        self.localizability_topic = localizability_topic
         
         self.total_cpu_usages = []
         self.calculation_times = []
@@ -28,31 +28,15 @@ class CPUUsageRecorder:
         self.odom_file = open(os.path.join(self.save_path, f'{self.prefix}odom.csv'), 'w', newline='')
         self.cpu_usage_file = open(os.path.join(self.save_path, f'{self.prefix}cpu_usage.csv'), 'w', newline='')
         self.calc_time_file = open(os.path.join(self.save_path, f'{self.prefix}calculation_time.csv'), 'w', newline='')
-        self.localizability_file_x = open(os.path.join(self.save_path, f'{self.prefix}localizability_x.csv'), 'w', newline='')
-        self.localizability_file_y = open(os.path.join(self.save_path, f'{self.prefix}localizability_y.csv'), 'w', newline='')
-        self.localizability_file_z = open(os.path.join(self.save_path, f'{self.prefix}localizability_z.csv'), 'w', newline='')
-        self.localizability_file_r = open(os.path.join(self.save_path, f'{self.prefix}localizability_r.csv'), 'w', newline='')
-        self.localizability_file_p = open(os.path.join(self.save_path, f'{self.prefix}localizability_p.csv'), 'w', newline='')
-        self.localizability_file_yy = open(os.path.join(self.save_path, f'{self.prefix}localizability_yy.csv'), 'w', newline='')
+        self.localizability_file = open(os.path.join(self.save_path, f'{self.prefix}localizability.csv'), 'w', newline='')
 
         self.csv_writer_odom = csv.writer(self.odom_file, delimiter=' ')
         self.csv_writer_cpu = csv.writer(self.cpu_usage_file)
         self.csv_writer_calc_time = csv.writer(self.calc_time_file)
-        self.csv_writer_localizability_x = csv.writer(self.localizability_file_x)
-        self.csv_writer_localizability_y = csv.writer(self.localizability_file_y)
-        self.csv_writer_localizability_z = csv.writer(self.localizability_file_z)
-        self.csv_writer_localizability_r = csv.writer(self.localizability_file_r)
-        self.csv_writer_localizability_p = csv.writer(self.localizability_file_p)
-        self.csv_writer_localizability_yy = csv.writer(self.localizability_file_yy)
+        self.csv_writer_localizability = csv.writer(self.localizability_file)
 
         self.csv_writer_cpu.writerow(['Time', 'CPU Usage (%)'])
         self.csv_writer_calc_time.writerow(['Time', 'Calculation Time'])
-        self.csv_writer_localizability_x.writerow(['Time', 'Localizability X'])
-        self.csv_writer_localizability_y.writerow(['Time', 'Localizability Y'])
-        self.csv_writer_localizability_z.writerow(['Time', 'Localizability Z'])
-        self.csv_writer_localizability_r.writerow(['Time', 'Localizability Roll'])
-        self.csv_writer_localizability_p.writerow(['Time', 'Localizability Pitch'])
-        self.csv_writer_localizability_yy.writerow(['Time', 'Localizability Yaw'])
 
     def get_process_cpu_usage(self):
         cpu_usage_sum = 0
@@ -103,35 +87,15 @@ class CPUUsageRecorder:
             self.calculation_times.append(data.data)
             self.csv_writer_calc_time.writerow([self.last_odom_time, data.data])
     
-    def localizability_callback_x(self, data):
+    def localizability_callback(self, data):
         if self.last_odom_time is not None:
-            self.csv_writer_localizability_x.writerow([self.last_odom_time, data.data])
-    def localizability_callback_y(self, data):
-        if self.last_odom_time is not None:
-            self.csv_writer_localizability_y.writerow([self.last_odom_time, data.data])
-    def localizability_callback_z(self, data):
-        if self.last_odom_time is not None:
-            self.csv_writer_localizability_z.writerow([self.last_odom_time, data.data])
-    def localizability_callback_r(self, data):
-        if self.last_odom_time is not None:
-            self.csv_writer_localizability_r.writerow([self.last_odom_time, data.data])
-    def localizability_callback_p(self, data):
-        if self.last_odom_time is not None:
-            self.csv_writer_localizability_p.writerow([self.last_odom_time, data.data])
-    def localizability_callback_yy(self, data):
-        if self.last_odom_time is not None:
-            self.csv_writer_localizability_yy.writerow([self.last_odom_time, data.data])
+            self.csv_writer_localizability.writerow([self.last_odom_time, data.x, data.y, data.z])
     
     def start(self):
         rospy.init_node('cpu_usage_recorder', anonymous=True)
         rospy.Subscriber(self.odom_topic, Odometry, self.odom_callback)
         rospy.Subscriber(self.calc_time_topic, Float32, self.calculation_time_callback)
-        rospy.Subscriber(self.localizability_topics[0], Float32, self.localizability_callback_x)
-        rospy.Subscriber(self.localizability_topics[1], Float32, self.localizability_callback_y)
-        rospy.Subscriber(self.localizability_topics[2], Float32, self.localizability_callback_z)
-        rospy.Subscriber(self.localizability_topics[3], Float32, self.localizability_callback_r)
-        rospy.Subscriber(self.localizability_topics[4], Float32, self.localizability_callback_p)
-        rospy.Subscriber(self.localizability_topics[5], Float32, self.localizability_callback_yy)
+        rospy.Subscriber(self.localizability_topic, Vector3, self.localizability_callback)
         # In the __init__ method, add the publisher for the Empty message
         self.no_odom_publisher = rospy.Publisher('/no_odom', Empty, queue_size=10)
         
@@ -143,12 +107,7 @@ class CPUUsageRecorder:
         finally:
             self.cpu_usage_file.close()
             self.calc_time_file.close()
-            self.localizability_file_x.close()
-            self.localizability_file_y.close()
-            self.localizability_file_z.close()
-            self.localizability_file_r.close()
-            self.localizability_file_p.close()
-            self.localizability_file_yy.close()
+            self.localizability_file.close()
             self.save_final_results()
     
     def save_final_results(self):
