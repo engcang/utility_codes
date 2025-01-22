@@ -89,7 +89,10 @@ class CPUUsageRecorder:
     
     def localizability_callback(self, data):
         if self.last_odom_time is not None:
-            self.csv_writer_localizability.writerow([self.last_odom_time, data.x, data.y, data.z])
+            if data.z == 0:
+                self.csv_writer_localizability.writerow([self.last_odom_time, data.x, data.y, data.z, 999999])
+            else:
+                self.csv_writer_localizability.writerow([self.last_odom_time, data.x, data.y, data.z, data.x/data.z])
     
     def start(self):
         rospy.init_node('cpu_usage_recorder', anonymous=True)
