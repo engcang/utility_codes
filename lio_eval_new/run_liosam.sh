@@ -12,77 +12,101 @@
     
 # 실행에 사용할 매개변수 설정
 ROOT_DIRECTORIES=(
-    "/media/mason/Datasets/subt_mrs/ugv"
-    "/media/mason/Datasets/subt_mrs/handheld"
-    "/media/mason/Datasets/subt_mrs/longcorridor"
-    "/media/mason/Datasets/subt_mrs/multifloor"
-    "/media/mason/Datasets/NewerCollegeDataset"
-    "/media/mason/Datasets/2022hilti"
-    "/media/mason/Datasets/2021hilti"
+    "/media/mason/Datasets/ntu_viral"
 )
 SAVE_DIRECTORIES=(
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/ncd"
-    "/media/mason/Datasets/results_eval_single/2022hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti_os"
+    "/media/mason/Datasets/results_eval_single/ntu_viral1"
 )
 PACKAGE_NAMES=(
     "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
 )
 LAUNCH_FILE_NAMES=(
-    "subt_ugv.launch"
-    "subt_handheld.launch"
-    "subt_longcorridor.launch"
-    "subt_multifloor.launch"
-    "ncd.launch"
-    "2022hilti.launch"
-    "2021hilti_os.launch"
+    "ntu1.launch"
 )
 ODOM_TOPIC_NAMES=(
     "/lio_sam_6axis/mapping/odometry"
-    "/lio_sam_6axis/mapping/odometry"
-    "/lio_sam_6axis/mapping/odometry"
-    "/lio_sam_6axis/mapping/odometry"
-    "/lio_sam_6axis/mapping/odometry"
-    "/lio_sam_6axis/mapping/odometry"
-    "/lio_sam_6axis/mapping/odometry"
 )
 TARGET_PROCESS_NAMES=(
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
+    "lio_sam_6axis_mapOpt"
 )
 TARGET_PROCESS_NAMES_2=(
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
-    "lio_sam_6axis"
+    "lio_sam_6axis_imuPre"
 )
 ALGORITHM_NAMES=(
     "liosam_"
-    "liosam_"
-    "liosam_"
-    "liosam_"
-    "liosam_"
-    "liosam_"
-    "liosam_"
 )
+# ROOT_DIRECTORIES=(
+#     "/media/mason/Datasets/subt_mrs/ugv"
+#     "/media/mason/Datasets/subt_mrs/handheld"
+#     "/media/mason/Datasets/subt_mrs/longcorridor"
+#     "/media/mason/Datasets/subt_mrs/multifloor"
+#     "/media/mason/Datasets/NewerCollegeDataset"
+#     "/media/mason/Datasets/2022hilti"
+#     "/media/mason/Datasets/2021hilti"
+# )
+# SAVE_DIRECTORIES=(
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/ncd"
+#     "/media/mason/Datasets/results_eval_single/2022hilti"
+#     "/media/mason/Datasets/results_eval_single/2021hilti_os"
+# )
+# PACKAGE_NAMES=(
+#     "lio_sam_6axis"
+#     "lio_sam_6axis"
+#     "lio_sam_6axis"
+#     "lio_sam_6axis"
+#     "lio_sam_6axis"
+#     "lio_sam_6axis"
+#     "lio_sam_6axis"
+# )
+# LAUNCH_FILE_NAMES=(
+#     "subt_ugv.launch"
+#     "subt_handheld.launch"
+#     "subt_longcorridor.launch"
+#     "subt_multifloor.launch"
+#     "ncd.launch"
+#     "2022hilti.launch"
+#     "2021hilti_os.launch"
+# )
+# ODOM_TOPIC_NAMES=(
+#     "/lio_sam_6axis/mapping/odometry"
+#     "/lio_sam_6axis/mapping/odometry"
+#     "/lio_sam_6axis/mapping/odometry"
+#     "/lio_sam_6axis/mapping/odometry"
+#     "/lio_sam_6axis/mapping/odometry"
+#     "/lio_sam_6axis/mapping/odometry"
+#     "/lio_sam_6axis/mapping/odometry"
+# )
+# TARGET_PROCESS_NAMES=(
+#     "lio_sam_6axis_mapOpt"
+#     "lio_sam_6axis_mapOpt"
+#     "lio_sam_6axis_mapOpt"
+#     "lio_sam_6axis_mapOpt"
+#     "lio_sam_6axis_mapOpt"
+#     "lio_sam_6axis_mapOpt"
+#     "lio_sam_6axis_mapOpt"
+# )
+# TARGET_PROCESS_NAMES_2=(
+#     "lio_sam_6axis_imuPre"
+#     "lio_sam_6axis_imuPre"
+#     "lio_sam_6axis_imuPre"
+#     "lio_sam_6axis_imuPre"
+#     "lio_sam_6axis_imuPre"
+#     "lio_sam_6axis_imuPre"
+#     "lio_sam_6axis_imuPre"
+# )
+# ALGORITHM_NAMES=(
+#     "liosam_"
+#     "liosam_"
+#     "liosam_"
+#     "liosam_"
+#     "liosam_"
+#     "liosam_"
+#     "liosam_"
+# )
 
 # 배열 크기 확인
 length=${#ROOT_DIRECTORIES[@]}

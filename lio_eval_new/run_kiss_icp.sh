@@ -12,93 +12,125 @@
     
 # 실행에 사용할 매개변수 설정
 ROOT_DIRECTORIES=(
-    "/media/mason/Datasets/subt_mrs/ugv"
-    "/media/mason/Datasets/subt_mrs/handheld"
-    "/media/mason/Datasets/subt_mrs/longcorridor"
-    "/media/mason/Datasets/subt_mrs/multifloor"
-    "/media/mason/Datasets/NewerCollegeDataset"
-    "/media/mason/Datasets/MulRan"
-    "/media/mason/Datasets/2022hilti"
-    "/media/mason/Datasets/2021hilti"
-    "/media/mason/Datasets/2021hilti"
+    "/media/mason/Datasets/ntu_again"
+    "/media/mason/Datasets/ntu_kiss"
 )
 SAVE_DIRECTORIES=(
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/ncd"
-    "/media/mason/Datasets/results_eval_single/mulran"
-    "/media/mason/Datasets/results_eval_single/2022hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti_os"
+    "/media/mason/Datasets/results_eval_single/ntu_viral1"
+    "/media/mason/Datasets/results_eval_single/ntu_viral1"
 )
 PACKAGE_NAMES=(
     "kiss_icp"
     "kiss_icp"
-    "kiss_icp"
-    "kiss_icp"
-    "kiss_icp"
-    "kiss_icp"
-    "kiss_icp"
-    "kiss_icp"
-    "kiss_icp"
 )
 LAUNCH_FILE_NAMES=(
-    "subt.launch"
-    "subt.launch"
-    "subt.launch"
-    "subt.launch"
-    "ncd.launch"
-    "mulran.launch"
-    "2022hilti.launch"
-    "2021hilti.launch"
-    "2021hilti_os.launch"
+    "ntu1.launch"
+    "ntu1.launch"
 )
 ODOM_TOPIC_NAMES=(
-    "/kiss/odometry"
-    "/kiss/odometry"
-    "/kiss/odometry"
-    "/kiss/odometry"
-    "/kiss/odometry"
-    "/kiss/odometry"
-    "/kiss/odometry"
     "/kiss/odometry"
     "/kiss/odometry"
 )
 TARGET_PROCESS_NAMES=(
     "odometry_"
     "odometry_"
-    "odometry_"
-    "odometry_"
-    "odometry_"
-    "odometry_"
-    "odometry_"
-    "odometry_"
-    "odometry_"
 )
 TARGET_PROCESS_NAMES_2=(
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
     "XXXXX"
     "XXXXX"
 )
 ALGORITHM_NAMES=(
     "kiss_icp_"
     "kiss_icp_"
-    "kiss_icp_"
-    "kiss_icp_"
-    "kiss_icp_"
-    "kiss_icp_"
-    "kiss_icp_"
-    "kiss_icp_"
-    "kiss_icp_"
 )
+# ROOT_DIRECTORIES=(
+#     "/media/mason/Datasets/subt_mrs/ugv"
+#     "/media/mason/Datasets/subt_mrs/handheld"
+#     "/media/mason/Datasets/subt_mrs/longcorridor"
+#     "/media/mason/Datasets/subt_mrs/multifloor"
+#     "/media/mason/Datasets/NewerCollegeDataset"
+#     "/media/mason/Datasets/MulRan"
+#     "/media/mason/Datasets/2022hilti"
+#     "/media/mason/Datasets/2021hilti"
+#     "/media/mason/Datasets/2021hilti"
+# )
+# SAVE_DIRECTORIES=(
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/ncd"
+#     "/media/mason/Datasets/results_eval_single/mulran"
+#     "/media/mason/Datasets/results_eval_single/2022hilti"
+#     "/media/mason/Datasets/results_eval_single/2021hilti"
+#     "/media/mason/Datasets/results_eval_single/2021hilti_os"
+# )
+# PACKAGE_NAMES=(
+#     "kiss_icp"
+#     "kiss_icp"
+#     "kiss_icp"
+#     "kiss_icp"
+#     "kiss_icp"
+#     "kiss_icp"
+#     "kiss_icp"
+#     "kiss_icp"
+#     "kiss_icp"
+# )
+# LAUNCH_FILE_NAMES=(
+#     "subt.launch"
+#     "subt.launch"
+#     "subt.launch"
+#     "subt.launch"
+#     "ncd.launch"
+#     "mulran.launch"
+#     "2022hilti.launch"
+#     "2021hilti.launch"
+#     "2021hilti_os.launch"
+# )
+# ODOM_TOPIC_NAMES=(
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+#     "/kiss/odometry"
+# )
+# TARGET_PROCESS_NAMES=(
+#     "odometry_"
+#     "odometry_"
+#     "odometry_"
+#     "odometry_"
+#     "odometry_"
+#     "odometry_"
+#     "odometry_"
+#     "odometry_"
+#     "odometry_"
+# )
+# TARGET_PROCESS_NAMES_2=(
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+# )
+# ALGORITHM_NAMES=(
+#     "kiss_icp_"
+#     "kiss_icp_"
+#     "kiss_icp_"
+#     "kiss_icp_"
+#     "kiss_icp_"
+#     "kiss_icp_"
+#     "kiss_icp_"
+#     "kiss_icp_"
+#     "kiss_icp_"
+# )
 
 # 배열 크기 확인
 length=${#ROOT_DIRECTORIES[@]}

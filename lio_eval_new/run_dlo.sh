@@ -12,93 +12,117 @@
     
 # 실행에 사용할 매개변수 설정
 ROOT_DIRECTORIES=(
-    "/media/mason/Datasets/subt_mrs/ugv"
-    "/media/mason/Datasets/subt_mrs/handheld"
-    "/media/mason/Datasets/subt_mrs/longcorridor"
-    "/media/mason/Datasets/subt_mrs/multifloor"
-    "/media/mason/Datasets/NewerCollegeDataset"
-    "/media/mason/Datasets/MulRan"
-    "/media/mason/Datasets/2022hilti"
-    "/media/mason/Datasets/2021hilti"
-    "/media/mason/Datasets/2021hilti"
+    "/media/mason/Datasets/ntu_viral"
 )
 SAVE_DIRECTORIES=(
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/ncd"
-    "/media/mason/Datasets/results_eval_single/mulran"
-    "/media/mason/Datasets/results_eval_single/2022hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti_os"
+    "/media/mason/Datasets/results_eval_single/ntu_viral1"
 )
 PACKAGE_NAMES=(
     "direct_lidar_odometry"
-    "direct_lidar_odometry"
-    "direct_lidar_odometry"
-    "direct_lidar_odometry"
-    "direct_lidar_odometry"
-    "direct_lidar_odometry"
-    "direct_lidar_odometry"
-    "direct_lidar_odometry"
-    "direct_lidar_odometry"
 )
 LAUNCH_FILE_NAMES=(
-    "subt.launch"
-    "subt.launch"
-    "subt.launch"
-    "subt.launch"
-    "ncd.launch"
-    "mulran.launch"
-    "2022hilti.launch"
-    "2021hilti.launch"
-    "2021hilti_os.launch"
+    "ntu1.launch"
 )
 ODOM_TOPIC_NAMES=(
-    "/robot/dlo/odom_node/odom"
-    "/robot/dlo/odom_node/odom"
-    "/robot/dlo/odom_node/odom"
-    "/robot/dlo/odom_node/odom"
-    "/robot/dlo/odom_node/odom"
-    "/robot/dlo/odom_node/odom"
-    "/robot/dlo/odom_node/odom"
-    "/robot/dlo/odom_node/odom"
     "/robot/dlo/odom_node/odom"
 )
 TARGET_PROCESS_NAMES=(
     "dlo_odom"
-    "dlo_odom"
-    "dlo_odom"
-    "dlo_odom"
-    "dlo_odom"
-    "dlo_odom"
-    "dlo_odom"
-    "dlo_odom"
-    "dlo_odom"
 )
 TARGET_PROCESS_NAMES_2=(
-    "dlo_map"
-    "dlo_map"
-    "dlo_map"
-    "dlo_map"
-    "dlo_map"
-    "dlo_map"
-    "dlo_map"
-    "dlo_map"
     "dlo_map"
 )
 ALGORITHM_NAMES=(
     "dlo_"
-    "dlo_"
-    "dlo_"
-    "dlo_"
-    "dlo_"
-    "dlo_"
-    "dlo_"
-    "dlo_"
-    "dlo_"
 )
+# ROOT_DIRECTORIES=(
+#     "/media/mason/Datasets/subt_mrs/ugv"
+#     "/media/mason/Datasets/subt_mrs/handheld"
+#     "/media/mason/Datasets/subt_mrs/longcorridor"
+#     "/media/mason/Datasets/subt_mrs/multifloor"
+#     "/media/mason/Datasets/NewerCollegeDataset"
+#     "/media/mason/Datasets/MulRan"
+#     "/media/mason/Datasets/2022hilti"
+#     "/media/mason/Datasets/2021hilti"
+#     "/media/mason/Datasets/2021hilti"
+# )
+# SAVE_DIRECTORIES=(
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/ncd"
+#     "/media/mason/Datasets/results_eval_single/mulran"
+#     "/media/mason/Datasets/results_eval_single/2022hilti"
+#     "/media/mason/Datasets/results_eval_single/2021hilti"
+#     "/media/mason/Datasets/results_eval_single/2021hilti_os"
+# )
+# PACKAGE_NAMES=(
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+#     "direct_lidar_odometry"
+# )
+# LAUNCH_FILE_NAMES=(
+#     "subt.launch"
+#     "subt.launch"
+#     "subt.launch"
+#     "subt.launch"
+#     "ncd.launch"
+#     "mulran.launch"
+#     "2022hilti.launch"
+#     "2021hilti.launch"
+#     "2021hilti_os.launch"
+# )
+# ODOM_TOPIC_NAMES=(
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+#     "/robot/dlo/odom_node/odom"
+# )
+# TARGET_PROCESS_NAMES=(
+#     "dlo_odom"
+#     "dlo_odom"
+#     "dlo_odom"
+#     "dlo_odom"
+#     "dlo_odom"
+#     "dlo_odom"
+#     "dlo_odom"
+#     "dlo_odom"
+#     "dlo_odom"
+# )
+# TARGET_PROCESS_NAMES_2=(
+#     "dlo_map"
+#     "dlo_map"
+#     "dlo_map"
+#     "dlo_map"
+#     "dlo_map"
+#     "dlo_map"
+#     "dlo_map"
+#     "dlo_map"
+#     "dlo_map"
+# )
+# ALGORITHM_NAMES=(
+#     "dlo_"
+#     "dlo_"
+#     "dlo_"
+#     "dlo_"
+#     "dlo_"
+#     "dlo_"
+#     "dlo_"
+#     "dlo_"
+#     "dlo_"
+# )
 
 # 배열 크기 확인
 length=${#ROOT_DIRECTORIES[@]}

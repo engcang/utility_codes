@@ -12,56 +12,26 @@
     
 # 실행에 사용할 매개변수 설정
 ROOT_DIRECTORIES=(
-    "/media/mason/Datasets/subt_mrs/ugv"
     "/media/mason/Datasets/subt_mrs/handheld"
     "/media/mason/Datasets/subt_mrs/longcorridor"
     "/media/mason/Datasets/subt_mrs/multifloor"
-    "/media/mason/Datasets/NewerCollegeDataset"
-    "/media/mason/Datasets/MulRan"
-    "/media/mason/Datasets/2022hilti"
-    "/media/mason/Datasets/2021hilti"
-    "/media/mason/Datasets/2021hilti"
 )
 SAVE_DIRECTORIES=(
     "/media/mason/Datasets/results_eval_single/subt"
     "/media/mason/Datasets/results_eval_single/subt"
     "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/subt"
-    "/media/mason/Datasets/results_eval_single/ncd"
-    "/media/mason/Datasets/results_eval_single/mulran"
-    "/media/mason/Datasets/results_eval_single/2022hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti"
-    "/media/mason/Datasets/results_eval_single/2021hilti_os"
 )
 PACKAGE_NAMES=(
     "ada_lio_dynamic"
     "ada_lio_dynamic"
     "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
 )
 LAUNCH_FILE_NAMES=(
-    "subt_ugv.launch"
     "subt_handheld.launch"
     "subt_longcorridor.launch"
     "subt_multifloor.launch"
-    "ncd.launch"
-    "mulran.launch"
-    "2022hilti.launch"
-    "2021hilti.launch"
-    "2021hilti_os.launch"
 )
 ODOM_TOPIC_NAMES=(
-    "/Odometry"
-    "/Odometry"
-    "/Odometry"
-    "/Odometry"
-    "/Odometry"
-    "/Odometry"
     "/Odometry"
     "/Odometry"
     "/Odometry"
@@ -70,20 +40,8 @@ TARGET_PROCESS_NAMES=(
     "ada_lio_dynamic"
     "ada_lio_dynamic"
     "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
-    "ada_lio_dynamic"
 )
 TARGET_PROCESS_NAMES_2=(
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
-    "XXXXX"
     "XXXXX"
     "XXXXX"
     "XXXXX"
@@ -92,13 +50,95 @@ ALGORITHM_NAMES=(
     "ada_lio_"
     "ada_lio_"
     "ada_lio_"
-    "ada_lio_"
-    "ada_lio_"
-    "ada_lio_"
-    "ada_lio_"
-    "ada_lio_"
-    "ada_lio_"
 )
+# ROOT_DIRECTORIES=(
+#     "/media/mason/Datasets/subt_mrs/ugv"
+#     "/media/mason/Datasets/subt_mrs/handheld"
+#     "/media/mason/Datasets/subt_mrs/longcorridor"
+#     "/media/mason/Datasets/subt_mrs/multifloor"
+#     "/media/mason/Datasets/NewerCollegeDataset"
+#     "/media/mason/Datasets/MulRan"
+#     "/media/mason/Datasets/2022hilti"
+#     "/media/mason/Datasets/2021hilti"
+#     "/media/mason/Datasets/2021hilti"
+# )
+# SAVE_DIRECTORIES=(
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/subt"
+#     "/media/mason/Datasets/results_eval_single/ncd"
+#     "/media/mason/Datasets/results_eval_single/mulran"
+#     "/media/mason/Datasets/results_eval_single/2022hilti"
+#     "/media/mason/Datasets/results_eval_single/2021hilti"
+#     "/media/mason/Datasets/results_eval_single/2021hilti_os"
+# )
+# PACKAGE_NAMES=(
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+# )
+# LAUNCH_FILE_NAMES=(
+#     "subt_ugv.launch"
+#     "subt_handheld.launch"
+#     "subt_longcorridor.launch"
+#     "subt_multifloor.launch"
+#     "ncd.launch"
+#     "mulran.launch"
+#     "2022hilti.launch"
+#     "2021hilti.launch"
+#     "2021hilti_os.launch"
+# )
+# ODOM_TOPIC_NAMES=(
+#     "/Odometry"
+#     "/Odometry"
+#     "/Odometry"
+#     "/Odometry"
+#     "/Odometry"
+#     "/Odometry"
+#     "/Odometry"
+#     "/Odometry"
+#     "/Odometry"
+# )
+# TARGET_PROCESS_NAMES=(
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+#     "ada_lio_dynamic"
+# )
+# TARGET_PROCESS_NAMES_2=(
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+#     "XXXXX"
+# )
+# ALGORITHM_NAMES=(
+#     "ada_lio_"
+#     "ada_lio_"
+#     "ada_lio_"
+#     "ada_lio_"
+#     "ada_lio_"
+#     "ada_lio_"
+#     "ada_lio_"
+#     "ada_lio_"
+#     "ada_lio_"
+# )
 
 # 배열 크기 확인
 length=${#ROOT_DIRECTORIES[@]}

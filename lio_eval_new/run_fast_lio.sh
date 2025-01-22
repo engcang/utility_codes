@@ -21,6 +21,7 @@ ROOT_DIRECTORIES=(
     "/media/mason/Datasets/2022hilti"
     "/media/mason/Datasets/2021hilti"
     "/media/mason/Datasets/2021hilti"
+    "/media/mason/Datasets/ntu_viral"
 )
 SAVE_DIRECTORIES=(
     "/media/mason/Datasets/results_eval_single/subt"
@@ -32,8 +33,10 @@ SAVE_DIRECTORIES=(
     "/media/mason/Datasets/results_eval_single/2022hilti"
     "/media/mason/Datasets/results_eval_single/2021hilti"
     "/media/mason/Datasets/results_eval_single/2021hilti_os"
+    "/media/mason/Datasets/results_eval_single/ntu_viral1"
 )
 PACKAGE_NAMES=(
+    "fast_lio"
     "fast_lio"
     "fast_lio"
     "fast_lio"
@@ -54,8 +57,10 @@ LAUNCH_FILE_NAMES=(
     "2022hilti.launch"
     "2021hilti.launch"
     "2021hilti_os.launch"
+    "ntu1.launch"
 )
 ODOM_TOPIC_NAMES=(
+    "/Odometry"
     "/Odometry"
     "/Odometry"
     "/Odometry"
@@ -76,6 +81,7 @@ TARGET_PROCESS_NAMES=(
     "fastlio_map"
     "fastlio_map"
     "fastlio_map"
+    "fastlio_map"
 )
 TARGET_PROCESS_NAMES_2=(
     "XXXXX"
@@ -87,17 +93,19 @@ TARGET_PROCESS_NAMES_2=(
     "XXXXX"
     "XXXXX"
     "XXXXX"
+    "XXXXX"
 )
 ALGORITHM_NAMES=(
-    "fast_lio_"
-    "fast_lio_"
-    "fast_lio_"
-    "fast_lio_"
-    "fast_lio_"
-    "fast_lio_"
-    "fast_lio_"
-    "fast_lio_"
-    "fast_lio_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
+    "baseline_"
 )
 
 # 배열 크기 확인
