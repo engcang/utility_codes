@@ -7,7 +7,8 @@
 - 메인으로 실행되는 dataset_auto_record_lio.py 파일 내에 다음과 같은 부분이 있다.
 - 즉, 아래 3번에서 설명하는 개별 알고리즘 실행 스크립트에서, 데이터셋 폴더 이름이나 파일 저장 경로에 `subt`가 포함되면 `velodyne_pointcloud` 패키지의 `VLP16_points.launch` 변환 코드를 자동 실행하게 되어있다.
 - 해당 패키지를 설치하든가, 아니면 주석해야함.
-- 마찬가지로 실행하는 패키지 이름에 `direct_lidar`, `kiss_icp`, `genz_icp`가 포함되면 livox_to_ouster.py 파일이 실행된다. `livox_ros_driver` 패키지를 실행하든가, 아니면 주석해야함.
+- 마찬가지로 실행하는 패키지 이름에 `direct_lidar`, `kiss_icp`, `genz_icp`가 포함되면 livox_to_ouster.py 파일이 실행된다.
+- `livox_ros_driver` 패키지를 설치하든가, 아니면 주석해야함. 또, 이왕 쓸거면 livox_to_ouster.py 코드 내에서 입력과 출력하는 토픽의 이름을 잘 확인해서 수정
     ```python
     if "subt" in folder_path or "subt" in file_save_path:
         velodyne_roslaunch_process = run_roslaunch("velodyne_pointcloud", "VLP16_points.launch")
@@ -26,9 +27,10 @@
 - roscore를 터미널 1에 실행 시킨다.
 - run_everything.sh 스크립트 파일을 터미널 2에 실행 시킨다.
 - run_everything.sh 스크립트 파일은 각 알고리즘의 run 파일을 실행 시킨다. 예) run_fast_lio.sh, run_ada_lio.sh
-- 각 알고리즘의 run 파일은 각 알고리즘을 원하는 데이터셋 * 모든 시퀀스에 대해 실행되고, 동시에 위치 추정치, 연산 시간, CPU 소모량을 기록한다.
+- 각 알고리즘의 run 파일은 각 알고리즘을 원하는 데이터셋 * 모든 시퀀스에 대해 실행하고, 동시에 위치 추정치, 연산 시간, CPU 소모량을 기록한다.
     - 각 run 파일에서는 dataset_auto_record_lio.py 파일을 실행시켜서 알고리즘 수행, bag 파일 재생, 로깅 코드를 실행한다
         - dataset_auto_record_lio.py 파일에서 cpu_calct_loc_ptnum_monitor.py 파일을 실행해서 로깅을 수행한다.
+    - 연산 시간의 경우, 알고리즘의 소스코드를 수정해서 연산 시간을 ms 단위로 /calc_time이라는 std_msgs/Float32 type의 토픽으로 쏴주어야한다.
 - 이후, 각 데이터셋별로 모든 시퀀스 * 모든 알고리즘에 대해 자동으로 `evo`를 실행해서 APE나 RPE 값을 표로 생성하는 코드 evo_autorun.py가 있으므로 해당 코드를 활용하면 된다.
 
 ### 1. 데이터셋 폴더 준비
@@ -152,6 +154,7 @@
 
 ### 5. 자동 결과 분석 코드
 - 위의 0~4번대로 수행하면 결과 저장 폴더에 각 알고리즘별로 알고리즘_odom.csv라는 이름으로 위치 추정치가 TUM 형식으로 기록된다.
+- 자동 결과 분석 코드를 사용하기 전, `EVO`가 설치되어있는지, 가상환경에 설치했다면 activate 했는지 확인하자.
 - python evo_autorun.py을 수행하면 해당 파일이 위치한 폴더안에 있는 모든 시퀀스 이름의 폴더에 대해, 지정해둔 prefix들에 대해 prefix_odom.csv 파일을 읽어와서 `EVO`의 APE 혹은 RPE를 계산해서 표 형태로 csv 파일로 기록한다.
     - 즉, 해당 파일이 위치한 폴더에 01_short_experiment, 02_short_experiment, 05_quad_with_dynamic 폴더가 존재.
         - 예) /media/mason/Datasets/results_eval_single/ncd 폴더 안에 evo_autorun.py 파일과 각 폴더들이 존재.
@@ -160,4 +163,4 @@
 - 필요에 따라 해당 파일 내에 base_folder와 prefixes 변수의 값을 수정하면 된다.
 - 추가로, 연산 시간이나 CPU 소모량도 함께 기록되어있다면 python calc_average.py 폴더이름 prefix_를 실행하면 해당 알고리즘의 해당 폴더 안에 있는 각 시퀀스별로 소모한 CPU 소모량을 읽어와서 평균을 계산해준다.
     - 연산 시간의 경우, 해당 알고리즘별로 코드를 수정해서 std_msgs/Float32 type으로 /calc_time이라는 이름의 topic에 ms 단위로 연산 시간을 publish하게 수정해야한다.
-    - https://github.com/engcang/slam-application의 각 폴더 안에 있는 알고리즘의 소스코드 참고.
+    - https://github.com/engcang/slam-application 사이트에 각 폴더 안에 있는 알고리즘의 소스코드 참고.
