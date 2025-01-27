@@ -55,6 +55,14 @@ def play_bag_file(bag_file_path):
     processes.append(play_bag_process)
     return play_bag_process
 
+def play_bag_file_offset(bag_file_path, offset):
+    global processes
+    """rosbag play 명령어를 실행"""
+    play_bag_cmd = ["rosbag", "play", bag_file_path, "--clock", "-s", str(offset)]
+    play_bag_process = subprocess.Popen(play_bag_cmd, preexec_fn=os.setsid)
+    processes.append(play_bag_process)
+    return play_bag_process
+
 def run_monitor_code(folder_path, algorithm_name, target_process_name, target_process_name2, odom_topic_name):
     global processes
     """모니터 코드를 실행"""
@@ -77,7 +85,7 @@ def main(root_directory, file_save_root_directory, package_name, launch_file_nam
     rospy.init_node('dataset_auto_record_lio', anonymous=True)
     rospy.Subscriber("/no_odom", Empty, no_odom_callback)
     
-    for folder in os.listdir(root_directory):
+    for folder in sorted(os.listdir(root_directory)):
         folder_path = os.path.join(root_directory, folder)
         file_save_path = os.path.join(file_save_root_directory, folder)
         if os.path.isdir(folder_path):
@@ -86,6 +94,7 @@ def main(root_directory, file_save_root_directory, package_name, launch_file_nam
 
             velodyne_roslaunch_process = None
             livox_convert_process = None
+            play_bag_process = None
             
             if os.path.exists(bag_file_path):
                 # 1. roslaunch 실행
@@ -103,7 +112,10 @@ def main(root_directory, file_save_root_directory, package_name, launch_file_nam
                 
                 # 4. rosbag play 실행
                 time.sleep(2)  # roslaunch가 완전히 실행될 시간을 줌
-                play_bag_process = play_bag_file(bag_file_path)
+                if "subt" in folder_path and "Long_Corridor" in bag_file_path:
+                    play_bag_process = play_bag_file_offset(bag_file_path, 1.5)
+                else:
+                    play_bag_process = play_bag_file(bag_file_path)
 
                 # 5. rosbag play 종료 대기
                 play_bag_process.wait()
